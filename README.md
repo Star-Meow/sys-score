@@ -6,11 +6,12 @@ db-sqlite3 3-0.0.1 <br>
 1.使用時 在資料夾內shift+右鍵 -> 用powersell開啟 
 ![alt text](image.png)<br>
 >    輸入 python window.py執行<br>
+
 2.輸入學號,課程,分數異動,以及備註(分數目前只接受加減乘除)<br>
 >    "logic2A.db" 資料庫內 有測試用資料<br>
->    學號       109021071
->    姓名       測試用 
->    分數       100
+>    學號       109021071<br>
+>    姓名       測試用 <br>
+>    分數       100<br>
 
 3.檢查資料內容請點開
     DB Browser for SQLite資料夾  ->  DB Browser for SQLite.exe
