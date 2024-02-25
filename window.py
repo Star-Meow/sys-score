@@ -48,25 +48,28 @@ def sent_btn():
                             act = '分數除以 '+ action[1:]
                         else:
                             new_score = r[2] + int(action)
-                            act = '分數加 '+ action[1:] + ' 分'
+                            if  action[0].isdigit():
+                                act = '分數加 '+ action[0:] + ' 分'
+                            else:
+                                act = '分數加 '+ action[1:] + ' 分'
 
                         if new_score < 0:
                             new_score = 0
                         cursor.execute("UPDATE score SET score = ? WHERE ID = ?", (new_score, id))
                         cursor.execute("INSERT INTO history (ID, action, info, time) VALUES (?, ?, ?, ?)", (id, act, info, nowtime))
-                    
+
                         print(f"{r[2]}，修改為 {new_score}！")
-                    
+                        messagebox.showinfo("更改成功",f"學生 {r[1]} 經過{act}後,分數目前為{new_score}！")
                         connection.commit()
                     else:
-                        messagebox.showerror("error",'中間請不要插入其他符號')
+                        messagebox.showerror("error",'請檢查學號以及課程有無錯誤')
                         print("更新資料失敗")
                 
                 else:
-                    messagebox.showerror("error",'中間請不要插入其他符號')
+                    messagebox.showerror("error",'請檢查分數欄位是否有錯')
                     print('中間請不要插入其他符號')
             else:
-                messagebox.showerror("error",'數字前面只能由+-*/開頭 ,加分可不用加號')
+                messagebox.showerror("error",'數字前面只能由+ - * / 開頭 ,加分可不用加號')
                 print('數字前面只能由+-*/開頭 ,加分可不用加號')
                 
         except sqlite3.Error as e:
