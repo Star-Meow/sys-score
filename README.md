@@ -10,10 +10,11 @@ db-sqlite3 3-0.0.1 <br>
     DB Browser for SQLite資料夾  ->  DB Browser for SQLite.exe
 ![alt text](image-4.png)<br>
 3.選擇資料庫
->左方按鍵打開資料庫
+左方按鍵打開資料庫
     選擇課程的資料庫 (遊戲邏輯 -> logic  互動媒體 -> media) 
     EX: "media2A.db"為互動媒體2A資料庫 
 ![alt text](image-2.png)<br>
+4.程式操作
     點選下方Browse Data
 ![alt text](image-1.png)<br>
     點選下拉式選單
