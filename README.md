@@ -26,5 +26,5 @@ db-sqlite3 3-0.0.1 <br>
     點選下拉式選單<br>
 ![alt text](image-5.png)<br>
 5.資料表查看<br>
-score -> 學號 姓名 分數<br>
-history -> 學號 更新內容 備註 當下時間
+>   score -> 學號 姓名 分數<br>
+>   history -> 學號 更新內容 備註 當下時間
