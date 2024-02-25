@@ -5,8 +5,8 @@ import sqlite3, random, datetime
 from tkinter import ttk,Tk, Canvas, Entry, Text, Button, PhotoImage
 import time
 from time import sleep
-OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"E:\github\sys-score\assets\frame0")
+OUTPUT_PATH = Path.cwd()
+ASSETS_PATH = OUTPUT_PATH / Path("assets/frame0")
 
 db_config = {
     'database': 'logic2A.db' 
@@ -19,20 +19,73 @@ def relative_to_assets(path: str) -> Path:
 def sent_btn():
     nowtime = time.strftime("%m-%d %H:%M")
     dbset()
+    eclass = entry_class.get()
+    id = entry_name.get()
+    action = entry_action.get()
+    info = entry_info.get()
+    entry_check = [
+        eclass,
+        id,
+        action,
+    ]
+    if all(entry_check):
+        try:
+
+
+            if action[0] in ['+', '-', '*', '/'] or action[0].isdigit():
+                if action[1:].isdigit():
+                    c = cursor.execute("SELECT * FROM score WHERE ID = ? ORDER BY ID DESC LIMIT 1", (id,))
+                    r = c.fetchone()
+                    if r:
+                        if action[0] == '-':
+                            new_score = r[2] - int(action[1:])
+                            act = '分數扣 '+ action[1:] + ' 分'
+                        elif action[0] == '*':
+                            new_score = r[2] * int(action[1:])
+                            act = '分數乘以 '+ action[1:] 
+                        elif action[0] == '/':
+                            new_score = r[2] // int(action[1:])
+                            act = '分數除以 '+ action[1:]
+                        else:
+                            new_score = r[2] + int(action)
+                            act = '分數加 '+ action[1:] + ' 分'
+
+                        if new_score < 0:
+                            new_score = 0
+                        cursor.execute("UPDATE score SET score = ? WHERE ID = ?", (new_score, id))
+                        cursor.execute("INSERT INTO history (ID, action, info, time) VALUES (?, ?, ?, ?)", (id, act, info, nowtime))
+                        print(f"{r[2]}，修改為 {new_score}！")
+                    
+                        connection.commit()
+                    else:
+                        print("更新資料失敗")
+                
+                else:
+                    print('中間請不要插入其他符號')
+            else:
+                print('數字前面只能由+-*/開頭 ,加分可不用加號')
+                
+        except sqlite3.Error as e:
+            print(f"執行 SQL 查詢時出錯: {e}")
+    else:
+        print("似乎漏了甚麼")
     entry_contents = [
         entry_class.get(),
         entry_name.get(),
         entry_action.get(),
         entry_info.get(),
         nowtime
+        
     ]
     print("Entry框的內容:")
     for content in entry_contents:
         print(content)
-        print(db_config)
+    print(db_config)
+
+
 
 def dbset():
-    global db_config
+    global db_config, connection, cursor
     eclass = entry_class.get()
     values=["遊戲程式邏輯2A", "遊戲程式邏輯2B", "互動媒體設計2A","互動媒體設計2B"]
     if eclass == values[0]:
@@ -51,6 +104,19 @@ def dbset():
         db_config = {
         'database': 'media2B.db' 
     }
+    while True:
+        try:
+            connection = sqlite3.connect(**db_config)
+            cursor = connection.cursor()
+
+            print("成功連接至DB！")
+            break
+        except sqlite3.Error as e:
+            print(f"連接錯誤: {e}")
+            print("reconneciton...")
+            sleep(2)
+
+
 
 window = Tk()
 
