@@ -9,7 +9,8 @@ db-sqlite3 3-0.0.1 <br>
 2.輸入學號,課程,分數異動,以及備註(分數目前只接受加減乘除)
     logic2A資料庫內 有測試用資料 
     學號       姓名    分數
-    109021071  測試用  100
+    109021071  測試用  100 
+
 3.檢查資料內容請點開
     DB Browser for SQLite資料夾  ->  DB Browser for SQLite.exe
 ![alt text](image-4.png)<br>
