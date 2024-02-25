@@ -1,8 +1,8 @@
 from pathlib import Path
-import sqlite3, random, datetime
+import sqlite3, random
 # from tkinter import *
 # Explicit imports to satisfy Flake8
-from tkinter import ttk,Tk, Canvas, Entry, Text, Button, PhotoImage
+from tkinter import ttk,Tk, Canvas, Entry, Text, Button, PhotoImage, messagebox
 import time
 from time import sleep
 OUTPUT_PATH = Path.cwd()
@@ -58,24 +58,27 @@ def sent_btn():
                     
                         connection.commit()
                     else:
+                        messagebox.showerror('中間請不要插入其他符號')
                         print("更新資料失敗")
                 
                 else:
+                    messagebox.showerror('中間請不要插入其他符號')
                     print('中間請不要插入其他符號')
             else:
+                messagebox.showerror('數字前面只能由+-*/開頭 ,加分可不用加號')
                 print('數字前面只能由+-*/開頭 ,加分可不用加號')
                 
         except sqlite3.Error as e:
+            messagebox.showerror("錯誤", f"執行 SQL 查詢時出錯: {e}")
             print(f"執行 SQL 查詢時出錯: {e}")
     else:
-        print("似乎漏了甚麼")
+        messagebox.showerror("課程,學號,分數皆不能為空")
+        print("課程,學號,分數皆不能為空")
     entry_contents = [
         entry_class.get(),
         entry_name.get(),
         entry_action.get(),
-        entry_info.get(),
-        nowtime
-        
+        entry_info.get(),  
     ]
     print("Entry框的內容:")
     for content in entry_contents:
@@ -190,7 +193,6 @@ entry_name.place(
     height=40.0
 )
 
-
 action_image = PhotoImage(
     file=relative_to_assets("entry_3.png"))
 entry_bg_3 = canvas.create_image(
@@ -211,7 +213,6 @@ entry_action.place(
     height=40.0
 )
 
-
 info_image = PhotoImage(
     file=relative_to_assets("entry_1.png"))
 entry_bg_1 = canvas.create_image(
@@ -231,8 +232,6 @@ entry_info.place(
     width=400.0,
     height=40.0
 )
-
-
 
 button_image_1 = PhotoImage(
     file=relative_to_assets("button_1.png"))
@@ -258,7 +257,6 @@ canvas.create_text(
     fill="#000000",
     font=("Inter", 20 * -1)
 )
-
 canvas.create_text(
     50.0,
     493.0,
@@ -267,7 +265,6 @@ canvas.create_text(
     fill="#000000",
     font=("Inter", 20 * -1)
 )
-
 canvas.create_text(
     50.0,
     223.0,
@@ -276,7 +273,6 @@ canvas.create_text(
     fill="#000000",
     font=("Inter", 20 * -1)
 )
-
 canvas.create_text(
     50.0,
     88.0,
@@ -285,7 +281,6 @@ canvas.create_text(
     fill="#000000",
     font=("Inter", 20 * -1)
 )
-
 canvas.create_text(
     225.0,
     16.0,
