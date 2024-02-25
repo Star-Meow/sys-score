@@ -1,10 +1,16 @@
 from pathlib import Path
+import sqlite3, random, datetime
 # from tkinter import *
 # Explicit imports to satisfy Flake8
 from tkinter import ttk,Tk, Canvas, Entry, Text, Button, PhotoImage
 import time
+from time import sleep
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"D:\github\sys-score\assets\frame0")
+ASSETS_PATH = OUTPUT_PATH / Path(r"E:\github\sys-score\assets\frame0")
+
+db_config = {
+    'database': 'logic2A.db' 
+}
 
 
 def relative_to_assets(path: str) -> Path:
@@ -12,6 +18,7 @@ def relative_to_assets(path: str) -> Path:
 
 def sent_btn():
     nowtime = time.strftime("%m-%d %H:%M")
+    dbset()
     entry_contents = [
         entry_class.get(),
         entry_name.get(),
@@ -22,7 +29,28 @@ def sent_btn():
     print("Entry框的內容:")
     for content in entry_contents:
         print(content)
+        print(db_config)
 
+def dbset():
+    global db_config
+    eclass = entry_class.get()
+    values=["遊戲程式邏輯2A", "遊戲程式邏輯2B", "互動媒體設計2A","互動媒體設計2B"]
+    if eclass == values[0]:
+        db_config = {
+        'database': 'logic2A.db' 
+    }
+    elif eclass == values[1]:
+        db_config = {
+        'database': 'logic2B.db' 
+    }
+    elif eclass == values[2]:
+        db_config = {
+        'database': 'media2A.db' 
+    }
+    elif eclass == values[3]:
+        db_config = {
+        'database': 'media2B.db' 
+    }
 
 window = Tk()
 
