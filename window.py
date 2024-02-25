@@ -54,25 +54,26 @@ def sent_btn():
                             new_score = 0
                         cursor.execute("UPDATE score SET score = ? WHERE ID = ?", (new_score, id))
                         cursor.execute("INSERT INTO history (ID, action, info, time) VALUES (?, ?, ?, ?)", (id, act, info, nowtime))
+                    
                         print(f"{r[2]}，修改為 {new_score}！")
                     
                         connection.commit()
                     else:
-                        messagebox.showerror('中間請不要插入其他符號')
+                        messagebox.showerror("error",'中間請不要插入其他符號')
                         print("更新資料失敗")
                 
                 else:
-                    messagebox.showerror('中間請不要插入其他符號')
+                    messagebox.showerror("error",'中間請不要插入其他符號')
                     print('中間請不要插入其他符號')
             else:
-                messagebox.showerror('數字前面只能由+-*/開頭 ,加分可不用加號')
+                messagebox.showerror("error",'數字前面只能由+-*/開頭 ,加分可不用加號')
                 print('數字前面只能由+-*/開頭 ,加分可不用加號')
                 
         except sqlite3.Error as e:
             messagebox.showerror("錯誤", f"執行 SQL 查詢時出錯: {e}")
             print(f"執行 SQL 查詢時出錯: {e}")
     else:
-        messagebox.showerror("課程,學號,分數皆不能為空")
+        messagebox.showerror("error","課程,學號,分數皆不能為空")
         print("課程,學號,分數皆不能為空")
     entry_contents = [
         entry_class.get(),
