@@ -4,7 +4,7 @@ pandas-2.2.1 <br>
 db-sqlite3 3-0.0.1 <br>
 
 1.使用時 在資料夾內shift+右鍵 -> 用powersell開啟 
-![alt text](image.png)
+![alt text](image.png)<br>
     輸入 python window.py執行
 2.輸入學號,課程,分數異動,以及備註(分數目前只接受加減乘除)
     logic2A資料庫內 有測試用資料 
