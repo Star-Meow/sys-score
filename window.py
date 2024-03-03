@@ -1,4 +1,5 @@
 from pathlib import Path
+from team import teamwindow_py
 import sqlite3, random
 # from tkinter import *
 # Explicit imports to satisfy Flake8
@@ -7,14 +8,46 @@ import time
 from time import sleep
 OUTPUT_PATH = Path.cwd()
 ASSETS_PATH = OUTPUT_PATH / Path("assets/frame0")
+def asset_win1(path: str) -> Path:
+    return ASSETS_PATH / Path(path)
+
 
 db_config = {
     'database': 'logic2A.db' 
 }
 
+def dbset():
+    global db_config, connection, cursor
+    eclass = entry_class.get()
+    values=["遊戲程式邏輯2A", "遊戲程式邏輯2B", "互動媒體設計2A","互動媒體設計2B"]
+    if eclass == values[0]:
+        db_config = {
+        'database': 'logic2A.db' 
+    }
+    elif eclass == values[1]:
+        db_config = {
+        'database': 'logic2B.db' 
+    }
+    elif eclass == values[2]:
+        db_config = {
+        'database': 'media2A.db' 
+    }
+    elif eclass == values[3]:
+        db_config = {
+        'database': 'media2B.db' 
+    }
+    while True:
+        try:
+            connection = sqlite3.connect(**db_config)
+            cursor = connection.cursor()
 
-def relative_to_assets(path: str) -> Path:
-    return ASSETS_PATH / Path(path)
+            print("成功連接至DB！")
+            break
+        except sqlite3.Error as e:
+            print(f"連接錯誤: {e}")
+            print("reconneciton...")
+            sleep(2)
+
 
 def sent_btn():
     nowtime = time.strftime("%m-%d %H:%M")
@@ -90,46 +123,9 @@ def sent_btn():
     print(db_config)
 
 
-
-def dbset():
-    global db_config, connection, cursor
-    eclass = entry_class.get()
-    values=["遊戲程式邏輯2A", "遊戲程式邏輯2B", "互動媒體設計2A","互動媒體設計2B"]
-    if eclass == values[0]:
-        db_config = {
-        'database': 'logic2A.db' 
-    }
-    elif eclass == values[1]:
-        db_config = {
-        'database': 'logic2B.db' 
-    }
-    elif eclass == values[2]:
-        db_config = {
-        'database': 'media2A.db' 
-    }
-    elif eclass == values[3]:
-        db_config = {
-        'database': 'media2B.db' 
-    }
-    while True:
-        try:
-            connection = sqlite3.connect(**db_config)
-            cursor = connection.cursor()
-
-            print("成功連接至DB！")
-            break
-        except sqlite3.Error as e:
-            print(f"連接錯誤: {e}")
-            print("reconneciton...")
-            sleep(2)
-
-
-
-window = Tk()
-
-window.geometry("500x700")
+window = Tk() #分數視窗
+window.geometry("500x700") 
 window.configure(bg = "#FFFFFF")
-
 
 canvas = Canvas(
     window,
@@ -159,7 +155,7 @@ canvas.create_rectangle(
     outline="")
 
 class_image = PhotoImage(
-    file=relative_to_assets("entry_4.png"))
+    file=asset_win1("entry_4.png"))
 entry_bg_4 = canvas.create_image(
     250.0,
     132.0,
@@ -178,7 +174,7 @@ entry_class.place(
 )
 
 name_image = PhotoImage(
-    file=relative_to_assets("entry_2.png"))
+    file=asset_win1("entry_2.png"))
 entry_bg_2 = canvas.create_image(
     250.0,
     267.0,
@@ -198,7 +194,7 @@ entry_name.place(
 )
 
 action_image = PhotoImage(
-    file=relative_to_assets("entry_3.png"))
+    file=asset_win1("entry_3.png"))
 entry_bg_3 = canvas.create_image(
     250.0,
     402.0,
@@ -218,7 +214,7 @@ entry_action.place(
 )
 
 info_image = PhotoImage(
-    file=relative_to_assets("entry_1.png"))
+    file=asset_win1("entry_1.png"))
 entry_bg_1 = canvas.create_image(
     250.0,
     537.0,
@@ -238,7 +234,7 @@ entry_info.place(
 )
 
 button_image_1 = PhotoImage(
-    file=relative_to_assets("button_1.png"))
+    file=asset_win1("button_1.png"))
 button_1 = Button(
     image=button_image_1,
     borderwidth=0,
@@ -294,6 +290,6 @@ canvas.create_text(
     font=("Inter", 20 * -1)
 )
 
-
-window.resizable(False, False)
-window.mainloop()
+if __name__ == '__main__':
+    window.resizable(False, False)
+    window.mainloop()
