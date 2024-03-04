@@ -1,10 +1,10 @@
 from pathlib import Path
 import sqlite3, random
-# from tkinter import *
-# Explicit imports to satisfy Flake8
 from tkinter import ttk,Tk, Canvas, Entry, Text, Button, PhotoImage, messagebox
 import time
 from time import sleep
+# en_1 -> 左下 此次新增隊員,en_2 -> memberB ,en_3 -> 左下 組別 ,en_4 -> 右上組別A ,en_5 -> memberA ,en_6 -> 課程box 
+
 
 def asset_win2(path: str) -> Path:
     OUTPUT_PATH2 = Path.cwd()
@@ -46,7 +46,15 @@ def dbset():
 def btn_build():#建組
     dbset()
     classes = entry_6.get()
-    print(classes)
+    memberA = entry_5.get()
+    memberB = entry_2.get()
+    memA = cursor.execute("SELECT * FROM score WHERE ID = ? ORDER BY ID DESC LIMIT 1", (memberA,))
+    memB = cursor.execute("SELECT * FROM score WHERE ID = ? ORDER BY ID DESC LIMIT 1", (memberB,))
+    rA = memA.fetchone()
+    rB = memB.fetchone()
+    a_s = rA[2] - 40
+    b_s = rB[2] - 40
+    print(classes,'A:'+memberA,'B:'+memberB,a_s,b_s)
     
 def btn_add():#增員
     print('')
@@ -121,7 +129,7 @@ entry_2 = Entry(
     bd=0,
     bg="#D9D9D9",
     fg="#000716",
-    highlightthickness=0
+    highlightthickness=0,
 )
 entry_2.place(
     x=56.0,
@@ -129,6 +137,7 @@ entry_2.place(
     width=400.0,
     height=40.0
 )
+entry_2.insert(0, '109021071')
 
 entry_image_3 = PhotoImage(
     file=asset_win2("entry_3.png"))
@@ -189,6 +198,7 @@ entry_5.place(
     width=400.0,
     height=40.0
 )
+entry_5.insert(0, '109021071')
 
 entry_image_6 = PhotoImage(
     file=asset_win2("entry_6.png"))

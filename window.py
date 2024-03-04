@@ -1,5 +1,4 @@
 from pathlib import Path
-from team import teamwindow_py
 import sqlite3, random
 # from tkinter import *
 # Explicit imports to satisfy Flake8
