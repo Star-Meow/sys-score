@@ -48,14 +48,46 @@ def btn_build():#建組
     classes = entry_6.get()
     memberA = entry_5.get()
     memberB = entry_2.get()
-    memA = cursor.execute("SELECT * FROM score WHERE ID = ? ORDER BY ID DESC LIMIT 1", (memberA,))
-    memB = cursor.execute("SELECT * FROM score WHERE ID = ? ORDER BY ID DESC LIMIT 1", (memberB,))
-    rA = memA.fetchone()
-    rB = memB.fetchone()
-    a_s = rA[2] - 40
-    b_s = rB[2] - 40
-    print(classes,'A:'+memberA,'B:'+memberB,a_s,b_s)
-    
+    try:
+        memA = cursor.execute("SELECT * FROM score WHERE ID = ? ORDER BY ID DESC LIMIT 1", (memberA,))
+        rA = memA.fetchone()
+        memB = cursor.execute("SELECT * FROM score WHERE ID = ? ORDER BY ID DESC LIMIT 1", (memberB,))
+        rB = memB.fetchone()
+        id_A = int(rA[0])
+        id_B = int(rB[0])
+    except:
+        messagebox.showerror("錯誤","輸入的學號不存在，請檢查")
+        print("學號不存在，請檢查錯誤")
+
+
+    if id_A == id_B: #先檢查學號
+        messagebox.showerror("組隊失敗","兩人學號相同")
+        print("兩個學號一樣")
+        print(classes,'A:'+memberA,'B:'+memberB,rA,rB)
+    else:#再查看分數
+        c = cursor.execute("SELECT * FROM team WHERE ID LIKE ?", ('%' + str(id_A) + '%',))
+        ser1 = c.fetchone()
+        c = cursor.execute("SELECT * FROM team WHERE ID LIKE ?", ('%' + str(id_B) + '%',))
+        ser2 = c.fetchone()
+        print(ser1,ser2)
+        if ser1 == None and ser2 == None:
+            if rA[2] - 40 > 0 and  rB[2] - 40 > 0 :
+                cursor.execute("INSERT INTO history (ID, action, info, time) VALUES (?, ?, ?, ?)", (id_A, '兩人組隊扣除積分', '組隊積分扣除 40', time.strftime("%m-%d %H:%M")))
+                cursor.execute("INSERT INTO history (ID, action, info, time) VALUES (?, ?, ?, ?)", (id_B, '兩人組隊扣除積分', '組隊積分扣除 40', time.strftime("%m-%d %H:%M")))
+                cursor.execute("INSERT INTO team (Party, mem, ID) VALUES (?, ?, ?)", ('party1' ,2 ,str(id_A)+str(id_B)))
+                #扣分還沒寫
+                messagebox.showinfo("組隊成功","各扣除40積分")
+                print("組隊成功")
+                print(classes,'A:'+memberA,'B:'+memberB,rA,rB)
+            else:
+                messagebox.showerror("組隊失敗","分數餘額不足，請確認再試")
+                print("餘額不足")
+                print(classes,'A:'+memberA,'B:'+memberB,rA,rB)
+        else:
+            messagebox.showerror("組隊失敗","其中有人已在隊伍中")
+            print("重複組隊")
+            print(classes,'A:'+memberA,'B:'+memberB,ser1,ser2)
+
 def btn_add():#增員
     print('')
 
@@ -137,7 +169,7 @@ entry_2.place(
     width=400.0,
     height=40.0
 )
-entry_2.insert(0, '109021071')
+entry_2.insert(0, '109051026')
 
 entry_image_3 = PhotoImage(
     file=asset_win2("entry_3.png"))
@@ -198,7 +230,7 @@ entry_5.place(
     width=400.0,
     height=40.0
 )
-entry_5.insert(0, '109021071')
+entry_5.insert(0, '109021060')
 
 entry_image_6 = PhotoImage(
     file=asset_win2("entry_6.png"))
