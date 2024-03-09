@@ -3,7 +3,13 @@ import sqlite3, random
 from tkinter import ttk,Tk, Canvas, Entry, Text, Button, PhotoImage, messagebox
 import time
 from time import sleep
-# en_1 -> 左下 此次新增隊員,en_2 -> memberB ,en_3 -> 左下 組別 ,en_4 -> 右上組別A ,en_5 -> memberA ,en_6 -> 課程box 
+# en_1 -> 左下 此次新增隊員 
+#en_2 -> memberB 
+#en_3 -> 左下 組別 
+#en_4 -> 右上組別A 
+#en_5 -> memberA 
+#en_6 -> 課程box 
+#en_7 -> 右下Query
 
 
 def asset_win2(path: str) -> Path:
@@ -53,29 +59,36 @@ def btn_build():#建組
         rA = memA.fetchone()
         memB = cursor.execute("SELECT * FROM score WHERE ID = ? ORDER BY ID DESC LIMIT 1", (memberB,))
         rB = memB.fetchone()
-        id_A = int(rA[0])
-        id_B = int(rB[0])
+
+        id_A = [int(rA[0]) ,int(rA[2])]#學號,分數
+        id_B = [int(rB[0]) ,int(rB[2])]
+        
+
     except:
         messagebox.showerror("錯誤","輸入的學號不存在，請檢查")
         print("學號不存在，請檢查錯誤")
 
 
-    if id_A == id_B: #先檢查學號
+    if id_A[0] == id_B[0]: #先檢查學號
         messagebox.showerror("組隊失敗","兩人學號相同")
         print("兩個學號一樣")
         print(classes,'A:'+memberA,'B:'+memberB,rA,rB)
     else:#再查看分數
-        c = cursor.execute("SELECT * FROM team WHERE ID LIKE ?", ('%' + str(id_A) + '%',))
+        c = cursor.execute("SELECT * FROM team WHERE ID LIKE ?", ('%' + str(id_A[0]) + '%',))
         ser1 = c.fetchone()
-        c = cursor.execute("SELECT * FROM team WHERE ID LIKE ?", ('%' + str(id_B) + '%',))
+        c = cursor.execute("SELECT * FROM team WHERE ID LIKE ?", ('%' + str(id_B[0]) + '%',))
         ser2 = c.fetchone()
         print(ser1,ser2)
         if ser1 == None and ser2 == None:
             if rA[2] - 40 > 0 and  rB[2] - 40 > 0 :
-                cursor.execute("INSERT INTO history (ID, action, info, time) VALUES (?, ?, ?, ?)", (id_A, '兩人組隊扣除積分', '組隊積分扣除 40', time.strftime("%m-%d %H:%M")))
-                cursor.execute("INSERT INTO history (ID, action, info, time) VALUES (?, ?, ?, ?)", (id_B, '兩人組隊扣除積分', '組隊積分扣除 40', time.strftime("%m-%d %H:%M")))
-                cursor.execute("INSERT INTO team (Party, mem, ID) VALUES (?, ?, ?)", ('party1' ,2 ,str(id_A)+str(id_B)))
-                #扣分還沒寫
+                c = cursor.execute("SELECT MAX(Party) FROM team")
+                n_p = c.fetchone()
+                cursor.execute("INSERT INTO history (ID, action, info, time) VALUES (?, ?, ?, ?)", (id_A[0], '兩人組隊扣除積分', '組隊積分扣除 40', time.strftime("%m-%d %H:%M")))
+                cursor.execute("INSERT INTO history (ID, action, info, time) VALUES (?, ?, ?, ?)", (id_B[0], '兩人組隊扣除積分', '組隊積分扣除 40', time.strftime("%m-%d %H:%M")))
+                cursor.execute("INSERT INTO team (Party, mem, ID) VALUES (?, ?, ?)", (int(n_p[0])+ 1  ,2 ,str(id_A[0]) + ',' + str(id_B[0])))
+                cursor.execute("UPDATE score SET score = ? WHERE ID = ?", (id_A[1]-40 , id_A[0]))
+                cursor.execute("UPDATE score SET score = ? WHERE ID = ?", (id_B[1]-40 , id_B[0]))
+                connection.commit()
                 messagebox.showinfo("組隊成功","各扣除40積分")
                 print("組隊成功")
                 print(classes,'A:'+memberA,'B:'+memberB,rA,rB)
@@ -95,8 +108,12 @@ def btn_merge(): #合併
     print('')
 
 def btn_query():#查詢
-    print('')
-
+    dbset()
+    box = entry_7.get()
+    c = cursor.execute("SELECT * FROM team WHERE party = ? ORDER BY party DESC LIMIT 1", (box,))
+    ser1 = c.fetchone()
+    #canvas.itemconfig(text_id, text='ji3e9 y9')
+    #尚未找到ID
 teamwindow = Tk()
 
 teamwindow.geometry("1080x800")
@@ -169,7 +186,7 @@ entry_2.place(
     width=400.0,
     height=40.0
 )
-entry_2.insert(0, '109051026')
+entry_2.insert(0, '109021071')
 
 entry_image_3 = PhotoImage(
     file=asset_win2("entry_3.png"))
@@ -230,7 +247,7 @@ entry_5.place(
     width=400.0,
     height=40.0
 )
-entry_5.insert(0, '109021060')
+entry_5.insert(0, '109021072')
 
 entry_image_6 = PhotoImage(
     file=asset_win2("entry_6.png"))
@@ -289,7 +306,7 @@ button_3 = Button(
     image=button_image_3,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: print("button_3 clicked"),
+    command=btn_query,
     relief="flat"
 )
 button_3.place(
