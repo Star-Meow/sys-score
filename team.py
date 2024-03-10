@@ -80,7 +80,7 @@ def btn_build():#建組
         ser2 = c.fetchone()
         print(ser1,ser2)
         if ser1 == None and ser2 == None:
-            if rA[2] - 40 > 0 and  rB[2] - 40 > 0 :
+            if rA[2] - 40 >= 0 and  rB[2] - 40 >= 0 :
                 c = cursor.execute("SELECT MAX(Party) FROM team")
                 n_p = c.fetchone()
                 cursor.execute("INSERT INTO history (ID, action, info, time) VALUES (?, ?, ?, ?)", (id_A[0], '兩人組隊扣除積分', '組隊積分扣除 40', time.strftime("%m-%d %H:%M")))
@@ -101,8 +101,71 @@ def btn_build():#建組
             print("重複組隊")
             print(classes,'A:'+memberA,'B:'+memberB,ser1,ser2)
 
+
 def btn_add():#增員
-    print('')
+    dbset()
+    party = entry_3.get()#組別
+    memberA = entry_1.get()
+    flagM = False
+    flagP = False
+
+
+    #查成員
+    memA = cursor.execute("SELECT * FROM score WHERE ID = ? ORDER BY ID DESC LIMIT 1", (memberA,))
+    rA = memA.fetchone()
+    if rA != None:
+        flagM =True
+        print(rA)
+    else:
+        messagebox.showerror("錯誤","輸入的學號不存在，請檢查")
+        print("學號不存在，請檢查錯誤")
+
+    if flagM == True:
+        c = cursor.execute("SELECT * FROM team WHERE ID LIKE ?", ('%' + memberA + '%',))
+        ser1 = c.fetchone()
+        if ser1 != None:
+            messagebox.showerror("錯誤","此學號已在隊伍中，請檢查")
+            print("此學號已在隊伍中，請檢查錯誤")        
+        else:
+            
+            try: #查組別
+                c = cursor.execute("SELECT * FROM team WHERE party = ? ORDER BY party DESC LIMIT 1", (party,))
+                p_info = c.fetchone()
+                flagP =True
+                print(flagP)
+            except:
+                messagebox.showerror("錯誤","輸入的隊伍不存在，請檢查")
+                print("隊伍不存在，請檢查錯誤")
+
+            if flagM == True and flagP == True:
+                m_info = p_info[2].split(',')
+                memnum = p_info[1]
+                score_list = []
+                        
+                for i in range(int(memnum)):
+                    c= cursor.execute("SELECT * FROM score WHERE ID = ? ORDER BY ID DESC LIMIT 1", (m_info[i],))
+                    sc = c.fetchone()
+                    score_list.append(sc[2])
+                score_list.append(rA[2])
+                m_info.append(rA[0])
+                sc_bonus = (int(memnum)-1) * 5 + 40
+                ans_mem = True
+
+                for i in score_list:
+                    if int(i) <= sc_bonus:
+                        ans = False
+                        messagebox.showerror("錯誤","組別成員分數不足")
+                        break
+
+                
+
+                print('組隊隊員:',ans_mem)
+                print(m_info)
+                print(score_list)
+            else:#再查看分數
+                print('有一個不是TRUE')
+
+
 
 def btn_merge(): #合併
     print('')
@@ -186,7 +249,7 @@ entry_2.place(
     width=400.0,
     height=40.0
 )
-entry_2.insert(0, '109021071')
+entry_2.insert(0, '')
 
 entry_image_3 = PhotoImage(
     file=asset_win2("entry_3.png"))
@@ -247,7 +310,7 @@ entry_5.place(
     width=400.0,
     height=40.0
 )
-entry_5.insert(0, '109021072')
+entry_5.insert(0, '')
 
 entry_image_6 = PhotoImage(
     file=asset_win2("entry_6.png"))
@@ -322,7 +385,7 @@ button_4 = Button(
     image=button_image_4,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: print("button_4 clicked"),
+    command=btn_add,
     relief="flat"
 )
 button_4.place(
