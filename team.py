@@ -83,20 +83,22 @@ def btn_build():#建組
             if rA[2] - 40 >= 0 and  rB[2] - 40 >= 0 :
                 c = cursor.execute("SELECT MAX(Party) FROM team")
                 n_p = c.fetchone()
-                
-                    
+
                 cursor.execute("INSERT INTO history (ID, action, info, time) VALUES (?, ?, ?, ?)", (id_A[0], '兩人組隊扣除積分', '組隊積分扣除 40', time.strftime("%m-%d %H:%M")))
                 cursor.execute("INSERT INTO history (ID, action, info, time) VALUES (?, ?, ?, ?)", (id_B[0], '兩人組隊扣除積分', '組隊積分扣除 40', time.strftime("%m-%d %H:%M")))
-                if n_p ==None:
-                    cursor.execute("INSERT INTO team (Party, mem, ID) VALUES (?, ?, ?)", (1  ,2 ,str(id_A[0]) + ',' + str(id_B[0])))
+                if n_p[0] == None:
+                    pt = 1
                 else:
-                    cursor.execute("INSERT INTO team (Party, mem, ID) VALUES (?, ?, ?)", (int(n_p[0])+ 1  ,2 ,str(id_A[0]) + ',' + str(id_B[0])))
-                #cursor.execute("UPDATE score SET score = ? WHERE ID = ?", (id_A[1]-40 , id_A[0]))
-                #cursor.execute("UPDATE score SET score = ? WHERE ID = ?", (id_B[1]-40 , id_B[0]))
+                    pt = int(n_p[0]) + 1
+                cursor.execute("INSERT INTO team (Party, mem, ID) VALUES (?, ?, ?)", (pt  ,2 ,str(id_A[0]) + ',' + str(id_B[0])))
+                cursor.execute("UPDATE score SET score = ? WHERE ID = ?", (id_A[1]-40 , id_A[0]))
+                cursor.execute("UPDATE score SET score = ? WHERE ID = ?", (id_B[1]-40 , id_B[0]))
                 connection.commit()
-                messagebox.showinfo("組隊成功","各扣除40積分")
+
                 print("組隊成功")
                 print(classes,'A:'+memberA,'B:'+memberB,rA,rB)
+                messagebox.showinfo("組隊成功","各扣除40積分")
+
             else:
                 messagebox.showerror("組隊失敗","分數餘額不足，請確認再試")
                 print("餘額不足")
@@ -270,7 +272,7 @@ entry_2.place(
     width=400.0,
     height=40.0
 )
-entry_2.insert(0, '')
+entry_2.insert(0, '109051219')
 
 entry_image_3 = PhotoImage(
     file=asset_win2("entry_3.png"))
@@ -331,7 +333,7 @@ entry_5.place(
     width=400.0,
     height=40.0
 )
-entry_5.insert(0, '')
+entry_5.insert(0, '109051046')
 
 entry_image_6 = PhotoImage(
     file=asset_win2("entry_6.png"))
