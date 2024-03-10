@@ -83,11 +83,16 @@ def btn_build():#建組
             if rA[2] - 40 >= 0 and  rB[2] - 40 >= 0 :
                 c = cursor.execute("SELECT MAX(Party) FROM team")
                 n_p = c.fetchone()
+                
+                    
                 cursor.execute("INSERT INTO history (ID, action, info, time) VALUES (?, ?, ?, ?)", (id_A[0], '兩人組隊扣除積分', '組隊積分扣除 40', time.strftime("%m-%d %H:%M")))
                 cursor.execute("INSERT INTO history (ID, action, info, time) VALUES (?, ?, ?, ?)", (id_B[0], '兩人組隊扣除積分', '組隊積分扣除 40', time.strftime("%m-%d %H:%M")))
-                cursor.execute("INSERT INTO team (Party, mem, ID) VALUES (?, ?, ?)", (int(n_p[0])+ 1  ,2 ,str(id_A[0]) + ',' + str(id_B[0])))
-                cursor.execute("UPDATE score SET score = ? WHERE ID = ?", (id_A[1]-40 , id_A[0]))
-                cursor.execute("UPDATE score SET score = ? WHERE ID = ?", (id_B[1]-40 , id_B[0]))
+                if n_p ==None:
+                    cursor.execute("INSERT INTO team (Party, mem, ID) VALUES (?, ?, ?)", (1  ,2 ,str(id_A[0]) + ',' + str(id_B[0])))
+                else:
+                    cursor.execute("INSERT INTO team (Party, mem, ID) VALUES (?, ?, ?)", (int(n_p[0])+ 1  ,2 ,str(id_A[0]) + ',' + str(id_B[0])))
+                #cursor.execute("UPDATE score SET score = ? WHERE ID = ?", (id_A[1]-40 , id_A[0]))
+                #cursor.execute("UPDATE score SET score = ? WHERE ID = ?", (id_B[1]-40 , id_B[0]))
                 connection.commit()
                 messagebox.showinfo("組隊成功","各扣除40積分")
                 print("組隊成功")
@@ -146,6 +151,7 @@ def btn_add():#增員
                     c= cursor.execute("SELECT * FROM score WHERE ID = ? ORDER BY ID DESC LIMIT 1", (m_info[i],))
                     sc = c.fetchone()
                     score_list.append(sc[2])
+
                 score_list.append(rA[2])
                 m_info.append(rA[0])
                 sc_bonus = (int(memnum)-1) * 5 + 40
@@ -157,11 +163,26 @@ def btn_add():#增員
                         messagebox.showerror("錯誤","組別成員分數不足")
                         break
 
-                
+                t = ''
+                for i in m_info:
+                    if i == m_info[len(m_info)-1]:
+                        t += str(i)
+                    else:
+                        t += str(i)+','
 
-                print('組隊隊員:',ans_mem)
+                for i in range(len(score_list)):
+                    cursor.execute("INSERT INTO history (ID, action, info, time) VALUES (?, ?, ?, ?)", (m_info[i], '組隊扣除積分', '組隊積分扣除 ' + str(sc_bonus), time.strftime("%m-%d %H:%M")))
+                    cursor.execute("UPDATE score SET score = ? WHERE ID = ?", (int(score_list[i]) -  sc_bonus ,m_info[i]))
+                    connection.commit()
+
+                cursor.execute("UPDATE team SET ID = ?, mem = ? WHERE party = ?", (t , int(p_info[1])+1, party))
+                connection.commit()
+
+                print("組隊成功")
+                print(t, party)
                 print(m_info)
                 print(score_list)
+                messagebox.showinfo("組隊成功","各扣除" + str(sc_bonus) +"積分")
             else:#再查看分數
                 print('有一個不是TRUE')
 
