@@ -191,14 +191,42 @@ def btn_add():#增員
 
 
 def btn_merge(): #合併
-    print('')
+    dbset()
+    boxA = entry_4.get()
+    boxB = entry_8.get()
+    flag_mer = False
+    try:
+        c = cursor.execute("SELECT * FROM team WHERE party = ? ORDER BY party DESC LIMIT 1", (boxA,))
+        boxA = c.fetchone()
+        c = cursor.execute("SELECT * FROM team WHERE party = ? ORDER BY party DESC LIMIT 1", (boxB,))
+        boxB = c.fetchone()
+        flag_mer = True
+    except:
+        messagebox.showerror("隊伍序號錯誤")
+        print("組隊輸入問題")
+
+    if flag_mer:
+        id_A = boxA[2].split(',')
+        id_B = boxB[2].split(',')
+        mer_list = id_A + id_B
+
+
+
+        print('測試')
+        print('A=',boxA,'B=',boxB)
+        print('mer=',mer_list)
+
 
 def btn_query():#查詢
     dbset()
     box = entry_7.get()
     c = cursor.execute("SELECT * FROM team WHERE party = ? ORDER BY party DESC LIMIT 1", (box,))
     ser1 = c.fetchone()
-    #canvas.itemconfig(text_id, text='ji3e9 y9')
+    id = ser1[2].split(',')
+    t = '組別人員為:\n'
+    for i in id:
+        t += i + '\n'
+    canvas.itemconfig(query_ID, text=t)
     #尚未找到ID
 teamwindow = Tk()
 
@@ -376,7 +404,7 @@ button_2 = Button(
     image=button_image_2,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: print("button_2 clicked"),
+    command=btn_merge,
     relief="flat"
 )
 button_2.place(
@@ -483,7 +511,7 @@ canvas.create_text(
     font=("Inter", 20 * -1)
 )
 
-canvas.create_text(
+query_ID = canvas.create_text(
     549.0,
     539.0,
     anchor="nw",
