@@ -219,6 +219,8 @@ def btn_merge(): #合併
 
             
             cursor.execute("UPDATE team SET mem = ? ,ID = ? WHERE party = ?", (len(mer_list), t, boxA[0]))
+            cursor.execute("DELETE FROM team WHERE party = ?", (boxB[0],))
+
 
             print(boxA[0], len(mer_list),t)
             print('mer=',mer_list)
@@ -234,7 +236,6 @@ def btn_query():#查詢
     for i in id:
         t += i + '\n'
     canvas.itemconfig(query_ID, text=t)
-    #尚未找到ID
 teamwindow = Tk()
 
 teamwindow.geometry("1080x800")
