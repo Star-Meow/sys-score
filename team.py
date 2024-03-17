@@ -195,26 +195,33 @@ def btn_merge(): #合併
     boxA = entry_4.get()
     boxB = entry_8.get()
     flag_mer = False
-    try:
-        c = cursor.execute("SELECT * FROM team WHERE party = ? ORDER BY party DESC LIMIT 1", (boxA,))
-        boxA = c.fetchone()
-        c = cursor.execute("SELECT * FROM team WHERE party = ? ORDER BY party DESC LIMIT 1", (boxB,))
-        boxB = c.fetchone()
-        flag_mer = True
-    except:
-        messagebox.showerror("隊伍序號錯誤")
+    c = cursor.execute("SELECT * FROM team WHERE party = ? ORDER BY party DESC LIMIT 1", (boxA,))
+    boxA = c.fetchone()
+    c = cursor.execute("SELECT * FROM team WHERE party = ? ORDER BY party DESC LIMIT 1", (boxB,))
+    boxB = c.fetchone()
+    flag_mer = True
+    if boxA == None or boxB ==None:
         print("組隊輸入問題")
+        messagebox.showerror("合併失敗","隊伍序號錯誤")
+    else:
+        if flag_mer:
+            id_A = boxA[2].split(',')
+            id_B = boxB[2].split(',')
+            mer_list = id_A + id_B
+            t = ''
+            for i in mer_list:
+                if i != mer_list[len(mer_list)-1]:
+                    t+= i + ','
+                else:
+                    t += i
+                cursor.execute("INSERT INTO history (ID, action, info, time) VALUES (?, ?, ?, ?)", (i,'隊伍變動','隊伍合併',time.strftime("%m-%d %H:%M")))
+            print("修改",t)
 
-    if flag_mer:
-        id_A = boxA[2].split(',')
-        id_B = boxB[2].split(',')
-        mer_list = id_A + id_B
+            
+            cursor.execute("UPDATE team SET mem = ? ,ID = ? WHERE party = ?", (len(mer_list), t, boxA[0]))
 
-
-
-        print('測試')
-        print('A=',boxA,'B=',boxB)
-        print('mer=',mer_list)
+            print(boxA[0], len(mer_list),t)
+            print('mer=',mer_list)
 
 
 def btn_query():#查詢
