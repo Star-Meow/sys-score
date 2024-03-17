@@ -199,6 +199,7 @@ def btn_merge(): #合併
     boxA = c.fetchone()
     c = cursor.execute("SELECT * FROM team WHERE party = ? ORDER BY party DESC LIMIT 1", (boxB,))
     boxB = c.fetchone()
+    
     flag_mer = True
     if boxA == None or boxB ==None:
         print("組隊輸入問題")
@@ -215,13 +216,17 @@ def btn_merge(): #合併
                 else:
                     t += i
                 cursor.execute("INSERT INTO history (ID, action, info, time) VALUES (?, ?, ?, ?)", (i,'隊伍變動','隊伍合併',time.strftime("%m-%d %H:%M")))
+                c = cursor.execute("SELECT * FROM score WHERE ID = ? ORDER BY ID DESC LIMIT 1", (i,))
+                score = c.fetchone()
+                cursor.execute("UPDATE score SET score = ? WHERE ID = ?", (score[2] - (30 + 5 * len(mer_list)),i))
+                connection.commit()
+                print(score)
             print("修改",t)
-
+            
             
             cursor.execute("UPDATE team SET mem = ? ,ID = ? WHERE party = ?", (len(mer_list), t, boxA[0]))
             cursor.execute("DELETE FROM team WHERE party = ?", (boxB[0],))
-
-
+            connection.commit()
             print(boxA[0], len(mer_list),t)
             print('mer=',mer_list)
 
