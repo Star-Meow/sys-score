@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Check Page</title>
+    <title>sys-score</title>
     <link rel="stylesheet" type="text/css" href="/static/css/Create.css" />
     <script type="text/javascript" src="./static/script/jquery.min.js"> </script>
 </head>
@@ -21,24 +21,50 @@
                 <a href="url3.html">籌碼</a>
             </nav>
         </div>
-        <div class="maininfo">
-            <div class="box">
-                <select id="id">
-                    <option value="遊戲程式邏輯2A">1</option>
-                    <option value="遊戲程式邏輯2B">2</option>
-                    <option value="互動媒體設計2A">3</option>
-                    <option value="互動媒體設計2B">3</option>
-                </select>
-                <label>分數</label>
-                <input id = "ID" type = "text"/>
+        <form id ="score" action="/submit" method="post">
+            <div class="maininfo">
+                
+                <div class="box">
+                    <select id = "db" name="db">
+                        <option value="1">遊戲程式邏輯2A</option>
+                        <option value="2">遊戲程式邏輯2B</option>
+                        <option value="3">互動媒體設計2A</option>
+                        <option value="4">互動媒體設計2B</option>
+                    </select>
+                    <label>分數</label>
+                    <input name = "score" type = "text"/>
+                    <button type="button" id="btn" onclick="subscore()">送出</button>
+                </div>
+
+                <div class="box">
+                
+                </div>
+                
             </div>
-            <div class="box">
+        </form>
             
-            </div>
-
-        </div>
-
     </div>
 </body>
 </html>
 
+<script>
+    function subscore() {
+        var db = document.getElementById("db").value;
+        var score = document.getElementById("score").value;
+        var data = {
+        "db": db,
+        "score": score
+    };
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/submit", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            // 處理成功回應
+            console.log(xhr.responseText);
+        }
+    };
+    xhr.send(JSON.stringify(data));
+}
+    
+</script>

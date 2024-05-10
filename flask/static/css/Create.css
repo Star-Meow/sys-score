@@ -51,7 +51,8 @@ label{
 }
 
 .box{
-
+    display: flex;
+    flex-direction: column;
     border: 2px solid #ffffff; /* 黑色边框 */
     border-radius: 8px;
     padding: 20px;
@@ -109,3 +110,17 @@ input[type="text"] {
     border-color: #8f8f8f; /* 输入框聚焦时的边框颜色 */
   }
   
+  #btn {
+    padding: 15px 25px;
+    font-size: 20px;
+    background-color: #1d1c1c;
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+  }
+  
+  /* 可以添加其他样式，如 hover 效果等 */
+  #btn:hover {
+    background-color: #e70e0e;
+  }
