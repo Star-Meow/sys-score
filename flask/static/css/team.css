@@ -19,11 +19,6 @@ label{
 }
 
 
-
-
-
-
-
 .main{
     display: flex;
     flex-direction: column;
@@ -88,26 +83,7 @@ label{
     color: black;
 }
 
-.scorebox{
-    display: flex;
-    flex-direction: row;
-    align-items: center; 
-}
 
-#symbol {
-    width:10%;
-    border-right: none;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-}
-
-#sc {
-    width: 90%;
-    border-left: none;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-
-}
 
 input[type="text"], select {
     /* 设置边框宽度、样式和颜色 */

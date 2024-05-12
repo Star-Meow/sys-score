@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sys-score</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/team.css" />
+    <script type="text/javascript" src="./static/script/jquery.min.js"> </script>
+</head>
+
+
+<body>
+    <div class="main">
+        <div class="titlebar">
+            <nav>
+                <a href="/">分數調整</a>
+                <a href="/team">修改隊伍</a>
+                <a href="url3.html">查詢</a>
+                <a href="url3.html">籌碼</a>
+            </nav>
+        </div>
+        <form id ="score" action="/submit" method="post">
+            <div class="maininfo">
+                
+                <div class="box">
+                    <label>課程選擇</label>
+                    <select id = "db" name="db">
+                        <option value="0">遊戲程式邏輯2A</option>
+                        <option value="1">遊戲程式邏輯2B</option>
+                        <option value="2">互動媒體設計2A</option>
+                        <option value="3">互動媒體設計2B</option>
+                    </select>
+                    <label>兩人組隊</label>
+                    <input id = "twocell" type = "text" value="" placeholder="隊員A 學號"/>      
+                    <input id = "twocell" type = "text" value=""  placeholder="隊員B 學號"/>
+                    <button type="button" id="btn" onclick="subscore()">送出</button>
+                </div>
+                
+            </div>
+        </form>
+            
+    </div>
+</body>
+</html>

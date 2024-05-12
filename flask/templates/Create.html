@@ -15,8 +15,8 @@
     <div class="main">
         <div class="titlebar">
             <nav>
-                <a href="url1.html">分數調整</a>
-                <a href="url2.html">修改隊伍</a>
+                <a href="/">分數調整</a>
+                <a href="/team">修改隊伍</a>
                 <a href="url3.html">查詢</a>
                 <a href="url3.html">籌碼</a>
             </nav>
@@ -25,14 +25,25 @@
             <div class="maininfo">
                 
                 <div class="box">
+                    <label>課程選擇</label>
                     <select id = "db" name="db">
-                        <option value="1">遊戲程式邏輯2A</option>
-                        <option value="2">遊戲程式邏輯2B</option>
-                        <option value="3">互動媒體設計2A</option>
-                        <option value="4">互動媒體設計2B</option>
+                        <option value="0">遊戲程式邏輯2A</option>
+                        <option value="1">遊戲程式邏輯2B</option>
+                        <option value="2">互動媒體設計2A</option>
+                        <option value="3">互動媒體設計2B</option>
                     </select>
+                    <label>學號</label>
+                    <input id = "stuid" type = "text" value=""/>
                     <label>分數</label>
-                    <input id = "score" type = "text"/>
+                    <div class = "scorebox">
+                        <select id = "symbol" >
+                            <option value="+">+</option>
+                            <option value="-">-</option>
+                        </select>
+                        <input id = "sc" type = "text" value=""/>
+                    </div>
+                    <label>事由</label>
+                    <input id = "info" type = "text" value=""/>
                     <button type="button" id="btn" onclick="subscore()">送出</button>
                 </div>
                 
@@ -45,13 +56,45 @@
 
 <script>
     function subscore() {
+        document.getElementById("btn").disabled = true;
+
         var db = document.getElementById("db").value;
-        var score = document.getElementById("score").value;
-        var data = {
+        var stuid = document.getElementById("stuid").value;
+        var symbol = document.getElementById("symbol").value;
+        var score = document.getElementById("sc").value;
+        var info = document.getElementById("info").value;
+        if (!(/^\d+$/.test(stuid)) || !(/^\d+$/.test(score))) {
+            alert("學號以及分數只能輸入數字！");
+            document.getElementById("btn").disabled = false;
+            return; 
+        }
+        var fdata = {
         "db": db,
-        "score": score
+        "stuid":stuid,
+        "symbol":symbol,
+        "score":score,
+        "info": info,
         };
-        console.log(data)
+        $.ajax({
+            url:"/submit",
+            method:"post",
+            data: JSON.stringify(fdata),
+            contentType: "application/json",
+            success:function(response){
+                console.log('succ')
+                if (response.success) {
+                    alert("資料提交成功！");
+
+                } else {
+                    alert("提交失敗，請檢查資料！");
+                }
+            },
+            complete: function() {
+                document.getElementById("btn").disabled = false;
+            }
+
+        })
+        
 
 }
     
