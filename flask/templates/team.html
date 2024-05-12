@@ -21,8 +21,14 @@
         </div>
         <form id ="score" action="/submit" method="post">
             <div class="maininfo">
-                
-                <div class="box">
+                <div class="box" id ="modebox">
+                    <label>模式選擇</label>
+                    <select id = "mode" >
+                        <option value="0">雙人組隊</option>
+                        <option value="1">追加隊員(一人)</option>
+                        <option value="2">隊伍合併</option>
+                    </select>
+
                     <label>課程選擇</label>
                     <select id = "db" name="db">
                         <option value="0">遊戲程式邏輯2A</option>
@@ -30,15 +36,58 @@
                         <option value="2">互動媒體設計2A</option>
                         <option value="3">互動媒體設計2B</option>
                     </select>
-                    <label>兩人組隊</label>
-                    <input id = "twocell" type = "text" value="" placeholder="隊員A 學號"/>      
-                    <input id = "twocell" type = "text" value=""  placeholder="隊員B 學號"/>
-                    <button type="button" id="btn" onclick="subscore()">送出</button>
+                </div>
+
+                <div class = "chose" id = "twocell" >
+                    <div class="box">
+                        <label>兩人組隊</label>
+                        <input id = "inputone" type = "text" value="" placeholder="隊員A 學號"/>      
+                        <input id = "inputone" type = "text" value=""  placeholder="隊員B 學號"/>
+                        <button type="button" class="btn" id ="btn1" onclick="">送出</button>
+                    </div>
                 </div>
                 
+                <div class = "chose" id = "onemore" >
+                    <div class="box">
+                        <label>追加隊員</label>
+
+                        <input id = "inputtwo" type = "text" value="" placeholder="要加入的組別"/>      
+                        <input id = "inputtwo" type = "text" value=""  placeholder="新增成員學號"/>
+                        <button type="button" class="btn" id ="btn2" onclick="">送出</button>
+                    </div>
+                </div>
+                <div class = "chose" id = "cellmerge" >
+                    <div class="box">
+                        </select>
+                        <label>隊伍合併</label>
+                        <input id = "twocell" type = "text" value="" placeholder="組別A"/>      
+                        <input id = "twocell" type = "text" value=""  placeholder="組別B"/>
+                        <button type="button" class="btn" id ="btn3" onclick="">送出</button>
+                    </div>
+                </div>
             </div>
         </form>
             
     </div>
 </body>
 </html>
+
+<script>
+    var modeSelect = document.getElementById('mode');
+    modeSelect.addEventListener('change', function() {
+        if (modeSelect.value === '0') {
+            document.getElementById('twocell').style.display = 'block';
+            document.getElementById('onemore').style.display = 'none';
+            document.getElementById('cellmerge').style.display = 'none';
+        } else if (modeSelect.value === '1') {
+            document.getElementById('twocell').style.display = 'none';
+            document.getElementById('onemore').style.display = 'block';
+            document.getElementById('cellmerge').style.display = 'none';
+        } else if (modeSelect.value === '2'){
+            document.getElementById('twocell').style.display = 'none';
+            document.getElementById('onemore').style.display = 'none';
+            document.getElementById('cellmerge').style.display = 'block';
+        } 
+    });
+
+</script>
