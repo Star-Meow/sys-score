@@ -1,3 +1,4 @@
+#app.py
 from flask import Flask,render_template, jsonify, request, redirect, url_for, session
 import sqlite3
 
@@ -50,4 +51,5 @@ def data():
     return jsonify(data)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000 ,debug=True)
+    app.debug=True
+    app.run(host='0.0.0.0', port=5000 )
