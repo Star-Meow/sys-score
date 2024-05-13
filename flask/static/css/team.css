@@ -86,7 +86,7 @@ label{
     height: 100 px; 
 }
 
-#twocell{
+.inputone, .inputtwo, .inputmerge{
     margin-bottom: 10px;
 }
 

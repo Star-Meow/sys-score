@@ -90,6 +90,17 @@ def submit():
 def team():
     return render_template('team.html')
 
+@app.route('/party', methods=['POST'])
+def party():
+    try:
+        data = request.json
+        nowtime = time.strftime("%m-%d %H:%M")
+        print(data)
+        return jsonify({'success': True})
+    except:
+        return jsonify({'success': False})
+
+
 if __name__ == '__main__':
     app.debug=True
     app.run(host='0.0.0.0', port=5000 )
