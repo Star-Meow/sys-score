@@ -96,7 +96,30 @@ def party():
         data = request.json
         nowtime = time.strftime("%m-%d %H:%M")
         print(data)
-        return jsonify({'success': True})
+        dbset(int(data['db']))
+        if data['memberA'] != data['memberB']:
+            if data['type'] == 1:
+                try:
+                    memA = cursor.execute(
+                        "SELECT * FROM score WHERE ID = ? ORDER BY ID DESC LIMIT 1", (data['memberA'],))
+                    mA = memA.fetchone()
+                    memB = cursor.execute(
+                        "SELECT * FROM score WHERE ID = ? ORDER BY ID DESC LIMIT 1", (data['memberB'],))
+                    mB = memB.fetchone()                
+                except:
+                    return jsonify({"success": False, "why": "資料庫找不到該學生!"})
+                
+                if mA[2] < 40 or mB[2] < 40:
+                    return jsonify({"success": False, "why": "學生分數不足!"})
+                else:
+                    return jsonify({'success': True})
+
+
+            elif data['type'] == 2:
+                return jsonify({'success': True})
+            elif data['type'] == 3:
+                return jsonify({'success': True})
+        
     except:
         return jsonify({'success': False})
 

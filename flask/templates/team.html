@@ -110,9 +110,8 @@
                 console.log('succ')
                 if (response.success) {
                     alert("資料提交成功！");
-
-                } else {
-                    alert("提交失敗，請檢查資料！");
+                }else{
+                    alert("提交失敗，" + response.why);
                 }
             },
         })
