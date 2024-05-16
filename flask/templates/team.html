@@ -109,8 +109,11 @@
             success:function(response){
                 console.log('succ')
                 if (response.success) {
-                    alert("資料提交成功！");
+                    console.log( response.why)
+                    alert("資料提交成功！" + response.why);
+
                 }else{
+                    console.log( response.why)
                     alert("提交失敗，" + response.why);
                 }
             },
