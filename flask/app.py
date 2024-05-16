@@ -110,6 +110,15 @@ def party():
                     return jsonify({"success": False, "why": "資料庫找不到該學生!"})
                 
                 if mA[2] < 40 or mB[2] < 40:
+                    c = cursor.execute("SELECT MAX(Party) FROM team")
+                    n_p = c.fetchone()
+                    cursor.execute(
+                        "INSERT INTO history (ID, action, info, time) VALUES (?, ?, ?, ?)",
+                        (mA[0], '兩人組隊扣除積分', '組隊積分扣除 40', time.strftime("%m-%d %H:%M")))
+                    cursor.execute(
+                        "INSERT INTO history (ID, action, info, time) VALUES (?, ?, ?, ?)",
+                        (mB[0], '兩人組隊扣除積分', '組隊積分扣除 40', time.strftime("%m-%d %H:%M")))
+
                     return jsonify({"success": False, "why": "學生分數不足!"})
                 else:
                     return jsonify({'success': True})
