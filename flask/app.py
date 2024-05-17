@@ -49,6 +49,14 @@ def dbset(value):
 def index():
     return render_template('Create.html')
 
+@app.route('/team')
+def team():
+    return render_template('team.html')
+
+@app.route('/search')
+def search():
+    return render_template('search.html')
+
 @app.route('/submit', methods=['POST'])
 def submit():
     try:
@@ -85,10 +93,6 @@ def submit():
             return jsonify({'success': True})
     except:
         return jsonify({'success': False})
-
-@app.route('/team')
-def team():
-    return render_template('team.html')
 
 @app.route('/party', methods=['POST'])
 def party():
@@ -182,8 +186,8 @@ def party():
                             break
                     if ans:
                         cursor.execute(
-                            "UPDATE team SET ID = ? WHERE Party = ?",
-                            (gp[2] + ',' + data['member'] , data['gp']))
+                            "UPDATE team SET ID = ?, mem = ? WHERE Party = ?",
+                            (gp[2] + ',' + data['member'] , len(stu), data['gp']))
                         for i, x in enumerate(num):
                             cursor.execute(
                                 "UPDATE score SET score = ? WHERE ID = ?",
@@ -202,11 +206,67 @@ def party():
                 return jsonify({"success": False, "why": "學生已在隊伍中!"})
         
     elif data['type'] == 3:
-        return jsonify({'success': True})
-    else:
-        return jsonify({"success": False, "why": "學生已在隊伍中!"})
+        group1 = cursor.execute(
+            "SELECT * FROM team WHERE Party = ? ORDER BY ID DESC LIMIT 1", (data['gp1'],))
+        gp1 = group1.fetchone()
+        group2 = cursor.execute(
+            "SELECT * FROM team WHERE Party = ? ORDER BY ID DESC LIMIT 1", (data['gp2'],))
+        gp2 = group2.fetchone()    
+        if gp1 == None: 
+            return jsonify({"success": False, "why": "資料庫找不到隊伍A!"})
+        if gp2 == None: 
+            return jsonify({"success": False, "why": "資料庫找不到隊伍B!"})
+        else:
+            stu = gp1[2].split(",")
+            stu.extend(gp2[2].split(","))
+            sc = 30 + 5 * (int(gp1[1])+int(gp2[1])) 
+            num = []
+            ans = True
+            for i in stu:
+                mem = cursor.execute(
+                    "SELECT * FROM score WHERE ID = ? ORDER BY ID DESC LIMIT 1", (i,))
+                member = mem.fetchone()
+                num.append(member[2])
+            
 
+            for i in num:
+                if i <= sc:
+                    ans = False
+                    break
+            if ans:
+                str_stu = ','.join(stu)
+                cursor.execute(
+                    "UPDATE team SET ID = ?, mem = ? WHERE Party = ?",
+                    (str_stu , len(stu), data['gp1']))
+                cursor.execute(
+                    "DELETE FROM team WHERE party = ?",
+                    (data['gp2'],))
+                for i, x in enumerate(num):
+                    cursor.execute(
+                        "UPDATE score SET score = ? WHERE ID = ?",
+                        (x - sc , stu[i]))
+                    cursor.execute(
+                        "INSERT INTO history (ID, action, info, time) VALUES (?, ?, ?, ?)",
+                        (stu[i], '追加一位成員，扣除積分', '組隊積分扣除 ' + str(sc), time.strftime("%m-%d %H:%M")))
+                connection.commit()
+                
+                return jsonify({'success': True, "why": "組隊成功!"})
+            else:
+                return jsonify({"success": False, "why": "學生分數不足!"})
+        
 
+@app.route('/list', methods=['POST'])
+def datalist():
+    data = request.json
+    dbset(int(data['db']))
+    sc = cursor.execute(
+        "SELECT * FROM team ORDER BY Party DESC ")
+    p = sc.fetchall() 
+    return jsonify({
+        'success': True,
+        'data':p
+        })
+    
 if __name__ == '__main__':
     app.debug=True
     app.run(host='0.0.0.0', port=5050 )
