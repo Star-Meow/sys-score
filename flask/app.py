@@ -166,16 +166,33 @@ def party():
             if stu1 == None:
                 if gp != None:
                     stu = gp[2].split(",")
+                    stu.append(data['member'])
                     sc = 30 + 5 * (int(gp[1]) + 1) 
-                    
-                    memA = cursor.execute(
-                        "SELECT * FROM score WHERE ID = ? ORDER BY ID DESC LIMIT 1", (stu[0],))
-                    mA = memA.fetchone()
-                    memB = cursor.execute(
-                        "SELECT * FROM score WHERE ID = ? ORDER BY ID DESC LIMIT 1", (stu[1],))
-                    mB = memB.fetchone()
-                    if mA[2] > 40 and mB[2] > 40:
+                    num = []
+                    ans = True
+                    for i in stu:
+                        memA = cursor.execute(
+                            "SELECT * FROM score WHERE ID = ? ORDER BY ID DESC LIMIT 1", (i,))
+                        mA = memA.fetchone()
+                        num.append(mA[2])
 
+                    for i in num:
+                        if i <= sc:
+                            ans = False
+                            break
+                    if ans:
+                        cursor.execute(
+                            "UPDATE team SET ID = ? WHERE Party = ?",
+                            (gp[2] + ',' + data['member'] , data['gp']))
+                        for i, x in enumerate(num):
+                            cursor.execute(
+                                "UPDATE score SET score = ? WHERE ID = ?",
+                                (x - sc , stu[i]))
+                            cursor.execute(
+                                "INSERT INTO history (ID, action, info, time) VALUES (?, ?, ?, ?)",
+                                (stu[i], '追加一位成員，扣除積分', '組隊積分扣除 ' + str(sc), time.strftime("%m-%d %H:%M")))
+                            
+                        connection.commit()
                         return jsonify({'success': True, "why": "組隊成功!"})
                     else:
                         return jsonify({"success": False, "why": "學生分數不足!"})

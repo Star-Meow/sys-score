@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sys-score</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/team.css" />
+    <script type="text/javascript" src="./static/script/jquery.min.js"> </script>
+</head>
+
+
+<body>
+    <div class="main">
+        <div class="titlebar">
+            <nav>
+                <a href="/">分數調整</a>
+                <a href="/team">修改隊伍</a>
+                <a href="url3.html">查詢</a>
+                <a href="url3.html">籌碼</a>
+            </nav>
+        </div>
+        <form id ="score" action="/submit" method="post">
+            <div class="maininfo">
+                <div class="box" id ="modebox">
+                    <label>模式選擇</label>
+                    <select id = "mode" >
+                        <option value="0">雙人組隊</option>
+                        <option value="1">追加隊員(一人)</option>
+                        <option value="2">隊伍合併</option>
+                    </select>
+
+                    <label>課程選擇</label>
+                    <select id = "db" name="db" >
+                        <option value="0">遊戲程式邏輯2A</option>
+                        <option value="1">遊戲程式邏輯2B</option>
+                        <option value="2">互動媒體設計2A</option>
+                        <option value="3">互動媒體設計2B</option>
+                    </select>
+                </div>
+
+                <div class = "chose" id = "twocell" >
+                    <div class="box">
+                        <label>雙人組隊</label>
+                        <input class = "inputone" id = "tcell1" type = "text" value="" placeholder="隊員A 學號"/>      
+                        <input class = "inputone" id = "tcell2" type = "text" value=""  placeholder="隊員B 學號"/>
+                        <button type="button" class="btn" id ="btn1" onclick="btnl(1)">送出</button>
+                    </div>
+                </div>
+                
+                <div class = "chose" id = "onemore" style="display: none;">
+                    <div class="box">
+                        <label>追加隊員</label>
+
+                        <input class = "inputtwo" id = "othergp" type = "text" value="" placeholder="要加入的組別"/>      
+                        <input class = "inputtwo" id = "othermem"  type = "text" value=""  placeholder="新增成員學號"/>
+                        <button type="button" class="btn" id ="btn2" onclick="btnl(2)">送出</button>
+                    </div>
+                </div>
+                <div class = "chose" id = "cellmerge" style="display: none;">
+                    <div class="box">
+                        </select>
+                        <label>隊伍合併</label>
+                        <input class = "inputmerge" id = "gp1" type = "text" value="" placeholder="組別A"/>      
+                        <input class = "inputmerge" id = "gp2" type = "text" value=""  placeholder="組別B"/>
+                        <button type="button" class="btn" id ="btn3" onclick="btnl(3)">送出</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+            
+    </div>
+</body>
+</html>
+
+<script>
+    var modeSelect = document.getElementById('mode');
+    modeSelect.addEventListener('change', function() {
+        if (modeSelect.value === '0') {
+            document.getElementById('twocell').style.display = 'block';
+            document.getElementById('onemore').style.display = 'none';
+            document.getElementById('cellmerge').style.display = 'none';
+        } else if (modeSelect.value === '1') {
+            document.getElementById('twocell').style.display = 'none';
+            document.getElementById('onemore').style.display = 'block';
+            document.getElementById('cellmerge').style.display = 'none';
+        } else if (modeSelect.value === '2'){
+            document.getElementById('twocell').style.display = 'none';
+            document.getElementById('onemore').style.display = 'none';
+            document.getElementById('cellmerge').style.display = 'block';
+        } 
+    });
+
+    function btnl(num){
+        var btnnum = num
+        console.log(btnnum)
+        if (btnnum === 1){
+            fdata = btn_twocell()
+        }else if (btnnum === 2){
+            fdata = btn_othermem()
+        }else if (btnnum === 3){
+            fdata = btn_merge()
+        }
+        console.log(fdata)
+        $.ajax({
+            url:"/party",
+            method:"post",
+            data: JSON.stringify(fdata),
+            contentType: "application/json",
+            success:function(response){
+                console.log('succ')
+                if (response.success) {
+                    console.log( response.why)
+                    alert("資料提交成功！" + response.why);
+
+                }else{
+                    console.log( response.why)
+                    alert("提交失敗，" + response.why);
+                }
+            },
+        })
+
+    }
+
+
+    function btn_twocell(){
+        var db = document.getElementById("db").value;
+        var memA = document.getElementById("tcell1").value;
+        var memB = document.getElementById("tcell2").value;
+        var type = 1
+        var fdata = {
+        "type":type,
+        "db": db,
+        "memberA":memA,
+        "memberB":memB,
+        };
+        return fdata
+    }
+
+    function btn_othermem(){
+        var db = document.getElementById("db").value;
+        var gp = document.getElementById("othergp").value;
+        var mem = document.getElementById("othermem").value;
+        var type = 2
+        var fdata = {
+        "type":type,
+        "db": db,
+        "gp":gp,
+        "member":mem,
+        };
+        return fdata
+    }
+
+    function btn_merge(){
+        var db = document.getElementById("db").value;
+        var gp1 = document.getElementById("gp1").value;
+        var gp2 = document.getElementById("gp2").value;
+        var type = 3
+        var fdata = {
+        "type":type,
+        "db": db,
+        "gp1":gp1,
+        "gp2":gp2,
+        };
+        return fdata
+    }
+</script>
