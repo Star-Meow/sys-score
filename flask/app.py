@@ -57,6 +57,10 @@ def team():
 def search():
     return render_template('search.html')
 
+@app.route('/chips')
+def chiph():
+    return render_template('chips.html')
+
 @app.route('/submit', methods=['POST'])
 def submit():
     try:

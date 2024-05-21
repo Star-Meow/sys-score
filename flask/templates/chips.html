@@ -1,0 +1,97 @@
+<!-- Chips.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sys-score</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/chips.css" />
+    <script type="text/javascript" src="./static/script/jquery.min.js"> </script>
+</head>
+
+
+<body>
+    <div class="main">
+        <div class="titlebar">
+            <nav>
+                <a href="/">分數調整</a>
+                <a href="/team">修改隊伍</a>
+                <a href="/search">查詢</a>
+                <a href="/chips">籌碼</a>
+            </nav>
+        </div>
+        <form id ="chips"  method="post">
+            <div class="maininfo">
+                <div class="box" id ="modebox">
+                    <label>模式選擇</label>
+                    <select id = "mode" >
+                        <option value="0">籌碼兌換</option>
+                        <option value="1">主題競標</option>
+
+                    </select>
+
+                    <label>課程選擇</label>
+                    <select id = "db" name="db" >
+                        <option value="0">遊戲程式邏輯2A</option>
+                        <option value="1">遊戲程式邏輯2B</option>
+                        <option value="2">互動媒體設計2A</option>
+                        <option value="3">互動媒體設計2B</option>
+                    </select>
+                </div>
+
+                <div class = "chose" id = "redeem" >
+                    <div class="box">
+                        <label>學號</label>
+                        <input id = "stuid" type = "text" value="" placeholder="新增成員學號"/>
+                        <label>積分兌換</label>
+                        <input id = "sc" type = "text" value="" oninput="upchip()" placeholder="兌換比例1:2 不可逆"/>
+                        <label >將兌換籌碼 : <span id="display">0</span></label>
+                        <button type="button"  class="btn" onclick="sub()">送出</button>
+                    </div>
+                </div>
+                
+                <div class = "chose" id = "forbid" style="display: none;">
+                    <div class="box">
+                        <label>主題</label>
+                        <input id = "tema" type = "text" value="" placeholder="請輸入主題"/>
+                        <label>得主</label>
+                        <input id = "bidder" type = "text" value="" placeholder="請輸入學號"/>
+                        <label>得標價</label>
+                        <input id = "bid" type = "text" value="" placeholder="請輸入得標價"/>
+                        <button type="button" class="btn" onclick="sub()">送出</button>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+            
+    </div>
+</body>
+</html>
+
+<script>
+    var modeSelect = document.getElementById('mode');
+    modeSelect.addEventListener('change', function() {
+        if (modeSelect.value === '0') {
+            document.getElementById('redeem').style.display = 'block';
+            document.getElementById('forbid').style.display = 'none';
+
+        } else if (modeSelect.value === '1') {
+            document.getElementById('redeem').style.display = 'none';
+            document.getElementById('forbid').style.display = 'block';
+
+        }
+    });
+
+    function upchip(){
+        var inputField = document.getElementById('sc');
+        var displayText = document.getElementById('display');
+        displayText.textContent = inputField.value;
+    }
+
+    function btnl(num){
+        
+    }
+
+</script>
