@@ -91,7 +91,7 @@ def submit():
             c = cursor.execute(
                 "UPDATE score SET score = ? WHERE ID = ?", (p, data['stuid']))
             cursor.execute(
-                "INSERT INTO history (ID, action, info, time) VALUES (?, ?, ?, ?)", (data['stuid'], '分數加'+ data['score'] + '分', data['info'], nowtime))
+                "INSERT INTO history (ID, action, info, time) VALUES (?, ?, ?, ?)", (data['stuid'], '分數減'+ data['score'] + '分', data['info'], nowtime))
             connection.commit()
             connection.close()
             return jsonify({'success': True})
