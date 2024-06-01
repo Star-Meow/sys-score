@@ -22,44 +22,61 @@
             </nav>
         </div>
         <form id ="chips"  method="post">
-            <div class="maininfo">
-                <div class="box" id ="modebox">
-                    <label>模式選擇</label>
-                    <select id = "mode" >
-                        <option value="0">籌碼兌換</option>
-                        <option value="1">主題競標</option>
+            <div class="side">
+                <div class="maininfo">
+                    <div class="box" id ="modebox">
+                        <label>模式選擇</label>
+                        <select id = "mode" >
+                            <option value="0">籌碼兌換</option>
+                            <option value="1">主題競標</option>
 
-                    </select>
+                        </select>
 
-                    <label>課程選擇</label>
-                    <select id = "db" name="db" >
-                        <option value="0">遊戲程式邏輯2A</option>
-                        <option value="1">遊戲程式邏輯2B</option>
-                        <option value="2">互動媒體設計2A</option>
-                        <option value="3">互動媒體設計2B</option>
-                    </select>
-                </div>
+                        <label>課程選擇</label>
+                        <select id = "db" name="db" >
+                            <option value="0">遊戲程式邏輯2A</option>
+                            <option value="1">遊戲程式邏輯2B</option>
+                            <option value="2">互動媒體設計2A</option>
+                            <option value="3">互動媒體設計2B</option>
+                        </select>
+                    </div>
 
-                <div class = "chose" id = "redeem" >
-                    <div class="box">
-                        <label>學號</label>
-                        <input id = "stuid" type = "text" value="" placeholder="新增成員學號"/>
-                        <label>積分兌換</label>
-                        <input id = "sc" type = "text" value="" oninput="upchip()" placeholder="兌換比例1:2 不可逆"/>
-                        <label >將兌換籌碼 : <span id="display">0</span></label>
-                        <button type="button"  class="btn" onclick="sub(1)">送出</button>
+                    <div class = "chose" id = "redeem" >
+                        <div class="box">
+                            <label>學號</label>
+                            <input id = "stuid" type = "text" value="" placeholder="新增成員學號"/>
+                            <label>積分兌換</label>
+                            <input id = "sc" type = "text" value="" oninput="upchip()" placeholder="兌換比例1:2 不可逆"/>
+                            <label >將兌換籌碼 : <span id="display">0</span></label>
+                            <button type="button"  class="btn" onclick="sub(1)">送出</button>
+                        </div>
+                    </div>
+                    
+                    <div class = "chose" id = "forbid" style="display: none;">
+                        <div class="box">
+                            <label>主題</label>
+                            <input id = "tema" type = "text" value="" placeholder="請輸入主題"/>
+                            <label>得主</label>
+                            <input id = "bidder" type = "text" value="" placeholder="請輸入學號"/>
+                            <label>得標價</label>
+                            <input id = "bid" type = "text" value="" placeholder="請輸入得標價"/>
+                            <button type="button" class="btn" onclick="sub(2)">送出</button>
+                        </div>
                     </div>
                 </div>
-                
-                <div class = "chose" id = "forbid" style="display: none;">
+
+                <div class = "sub">
                     <div class="box">
-                        <label>主題</label>
-                        <input id = "tema" type = "text" value="" placeholder="請輸入主題"/>
-                        <label>得主</label>
-                        <input id = "bidder" type = "text" value="" placeholder="請輸入學號"/>
-                        <label>得標價</label>
-                        <input id = "bid" type = "text" value="" placeholder="請輸入得標價"/>
-                        <button type="button" class="btn" onclick="sub(2)">送出</button>
+                        <table id="datatable" class="sclist">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>NAME</th>
+                                    <th>SCORE</th>
+                                    <th>CHIP</th>
+                                <tr>
+                            </thead>
+                        </table>
                     </div>
                 </div>
 
@@ -90,40 +107,56 @@
         displayText.textContent = inputField.value;
     }
 
-    function btnl(num){
+    function sub(num){
         var btnnum = num
         console.log(btnnum)
         if (btnnum === 1){
             fdata = btn_chip()
+            console.log(fdata)
         }else if (btnnum === 2){
             fdata = btn_bid()
+            console.log(fdata)
         }
     }
 
 
     function btn_chip(){
         var db = document.getElementById("db").value;
-        var tema = document.getElementById("tema").value;
-        var bidder = document.getElementById("bidder").value;
-        var bid = document.getElementById("bid").value;
+        var chip = document.getElementById("sc").value;
         var type = 1
         var fdata = {
         "type":type,
         "db": db,
-        "cjip":chip, 
+        "chip":chip, 
         };
         return fdata
     }
 
     function btn_bid(){
         var db = document.getElementById("db").value;
-        var chip = document.getElementById("sc").value;
-        var type = 1
+        var tema = document.getElementById("tema").value;
+        var bidder = document.getElementById("bidder").value;
+        var bid = document.getElementById("bid").value;
+        var type = 2
         var fdata = {
         "type":type,
         "db": db,
-        "cjip":chip, 
+        "tema":tema, 
+        "bidder":bidder,
+        "bid":bid,
         };
         return fdata
+    }
+
+    window.setInterval(fn_ajax, 500);
+    function list_ajax() {
+        $.ajax({
+            url: '/AJAX',
+            type: "GET",
+            dataType: "json",
+            success: function(res) {
+
+            }
+        });
     }
 </script>

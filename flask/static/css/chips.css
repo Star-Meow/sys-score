@@ -81,10 +81,22 @@ label{
     background-color: #ffffff;
     margin: 20px;
 }
+
+.side{
+    display: flex;
+    flex-direction: row;
+}
+
+.sub{
+    display: flex;
+    flex-direction: row;
+}
+
 /*------------------------------------------------------*/
 #modebox{
     height: 100 px; 
 }
+
 
 
 

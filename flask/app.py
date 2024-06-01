@@ -259,18 +259,12 @@ def party():
                 return jsonify({"success": False, "why": "學生分數不足!"})
         
 
-@app.route('/list', methods=['POST'])
+@app.route('/list', methods=['GET'])
 def datalist():
-    data = request.json
-    dbset(int(data['db']))
-    sc = cursor.execute(
-        "SELECT * FROM team ORDER BY Party DESC ")
-    p = sc.fetchall() 
-    return jsonify({
-        'success': True,
-        'data':p
-        })
-    
+    d = {'data': "test"}
+    return jsonify(d)
+
+
 if __name__ == '__main__':
     app.debug=True
     app.run(host='0.0.0.0', port=5050 )
