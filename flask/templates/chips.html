@@ -47,7 +47,7 @@
                         <label>積分兌換</label>
                         <input id = "sc" type = "text" value="" oninput="upchip()" placeholder="兌換比例1:2 不可逆"/>
                         <label >將兌換籌碼 : <span id="display">0</span></label>
-                        <button type="button"  class="btn" onclick="sub()">送出</button>
+                        <button type="button"  class="btn" onclick="sub(1)">送出</button>
                     </div>
                 </div>
                 
@@ -59,7 +59,7 @@
                         <input id = "bidder" type = "text" value="" placeholder="請輸入學號"/>
                         <label>得標價</label>
                         <input id = "bid" type = "text" value="" placeholder="請輸入得標價"/>
-                        <button type="button" class="btn" onclick="sub()">送出</button>
+                        <button type="button" class="btn" onclick="sub(2)">送出</button>
                     </div>
                 </div>
 
@@ -91,7 +91,39 @@
     }
 
     function btnl(num){
-        
+        var btnnum = num
+        console.log(btnnum)
+        if (btnnum === 1){
+            fdata = btn_chip()
+        }else if (btnnum === 2){
+            fdata = btn_bid()
+        }
     }
 
+
+    function btn_chip(){
+        var db = document.getElementById("db").value;
+        var tema = document.getElementById("tema").value;
+        var bidder = document.getElementById("bidder").value;
+        var bid = document.getElementById("bid").value;
+        var type = 1
+        var fdata = {
+        "type":type,
+        "db": db,
+        "cjip":chip, 
+        };
+        return fdata
+    }
+
+    function btn_bid(){
+        var db = document.getElementById("db").value;
+        var chip = document.getElementById("sc").value;
+        var type = 1
+        var fdata = {
+        "type":type,
+        "db": db,
+        "cjip":chip, 
+        };
+        return fdata
+    }
 </script>
