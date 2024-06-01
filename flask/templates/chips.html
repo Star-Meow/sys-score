@@ -48,7 +48,7 @@
                             <label>積分兌換</label>
                             <input id = "sc" type = "text" value="" oninput="upchip()" placeholder="兌換比例1:2 不可逆"/>
                             <label >將兌換籌碼 : <span id="display">0</span></label>
-                            <button type="button"  class="btn" onclick="sub(1)">送出</button>
+                            <button type="button"  class="btn" id = "btn1" onclick="sub(1)">送出</button>
                         </div>
                     </div>
                     
@@ -60,28 +60,31 @@
                             <input id = "bidder" type = "text" value="" placeholder="請輸入學號"/>
                             <label>得標價</label>
                             <input id = "bid" type = "text" value="" placeholder="請輸入得標價"/>
-                            <button type="button" class="btn" onclick="sub(2)">送出</button>
+                            <button type="button" class="btn" id = "btn2" onclick="sub(2)">送出</button>
                         </div>
                     </div>
                 </div>
-
+        </form>
                 <div class = "sub">
                     <div class="box">
                         <table id="datatable" class="sclist">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
-                                    <th>NAME</th>
-                                    <th>SCORE</th>
-                                    <th>CHIP</th>
+                                    <th>學號</th>
+                                    <th>姓名</th>
+                                    <th>目前積分</th>
+                                    <th>目前籌碼</th>
                                 <tr>
                             </thead>
+                            <tbody>
+
+                            </tbody>
                         </table>
                     </div>
                 </div>
 
             </div>
-        </form>
+        
             
     </div>
 </body>
@@ -102,33 +105,59 @@
     });
 
     function upchip(){
-        var inputField = document.getElementById('sc');
+        var inputValue = document.getElementById('sc').value;
         var displayText = document.getElementById('display');
-        displayText.textContent = inputField.value;
+        parseInt(inputValue)
+
+        if (!isNaN(inputValue)) {
+        displayText.textContent = inputValue * 2;
+        } else {
+        displayText.textContent = "ERROR";
+        }
     }
 
     function sub(num){
         var btnnum = num
-        console.log(btnnum)
         if (btnnum === 1){
             fdata = btn_chip()
-            console.log(fdata)
         }else if (btnnum === 2){
             fdata = btn_bid()
-            console.log(fdata)
+            
         }
+        
+        $.ajax({
+            url:"/bid",
+            method:"post",
+            data: JSON.stringify(fdata),
+            contentType: "application/json",
+            success:function(response){
+                console.log('succ')
+                if (response.success) {
+                    alert("資料提交成功！");
+
+                } else {
+                    alert("提交失敗，請檢查資料！");
+                }
+            },
+            complete: function() {
+            }
+
+        })
     }
 
 
     function btn_chip(){
         var db = document.getElementById("db").value;
+        var stuid = document.getElementById("stuid").value;
         var chip = document.getElementById("sc").value;
         var type = 1
         var fdata = {
-        "type":type,
         "db": db,
+        "type":type,
+        "ID": stuid,
         "chip":chip, 
         };
+        console.log(fdata)
         return fdata
     }
 
@@ -145,18 +174,43 @@
         "bidder":bidder,
         "bid":bid,
         };
+        console.log(fdata)
         return fdata
     }
 
-    window.setInterval(fn_ajax, 500);
+    function update(data) {
+        var tbody = $("#datatable tbody");
+        tbody.empty(); // 清空当前表格数据
+        data.forEach(function(item) {
+            tbody.append("<tr>" +
+                "<td>" + item.id + "</td>" +
+                "<td>" + item.name + "</td>" +
+                "<td>" + item.score + "</td>" +
+                "<td>" + item.chip + "</td>" +
+                "</tr>"
+            );
+        });
+    }
+
     function list_ajax() {
+        var dbValue = document.getElementById("db").value;
+        var type = document.getElementById('mode').value;
         $.ajax({
-            url: '/AJAX',
+            url: '/list',
             type: "GET",
+            data: { 
+                db: dbValue,
+                type:type
+             },
             dataType: "json",
             success: function(res) {
-
+                update(res);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error fetching data:", error);
             }
         });
     }
+
+    window.setInterval(list_ajax, 1000);
 </script>

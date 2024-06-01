@@ -102,7 +102,6 @@ def submit():
 def party():
     data = request.json
     nowtime = time.strftime("%m-%d %H:%M")
-    print(data)
     dbset(int(data['db']))
     if data['type'] == 1:
         if data['memberA'] != data['memberB']:
@@ -261,8 +260,43 @@ def party():
 
 @app.route('/list', methods=['GET'])
 def datalist():
-    d = {'data': "test"}
-    return jsonify(d)
+    d = int(request.args.get('db'))
+    t = int(request.args.get('type'))
+    if d is not None:
+        if t == 0:
+            dbset(d)
+            c = cursor.execute("SELECT * FROM score ORDER BY score DESC")
+            lst = c.fetchall()
+            data = [{
+                "id": i[0],
+                "name": i[1],
+                "score": i[2],
+                "chip": i[3]} for i in lst]
+            
+            return jsonify(data)
+        elif t == 1:
+            dbset(d)
+            c = cursor.execute("SELECT * FROM score ORDER BY chip DESC")
+            lst = c.fetchall()
+            data = [{
+                "id": i[0],
+                "name": i[1],
+                "score": i[2],
+                "chip": i[3]} for i in lst]
+            
+            return jsonify(data)
+
+    else:
+        return jsonify({"error": "db parameter is missing"}), 400
+
+
+@app.route('/bid', methods=['POST'])
+def bid():
+    data = request.json
+    print(data)
+    nowtime = time.strftime("%m-%d %H:%M")
+    dbset(int(data['db']))
+    return jsonify({'success': True})
 
 
 if __name__ == '__main__':
