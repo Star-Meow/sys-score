@@ -1,7 +1,7 @@
 #app.py
 from flask import Flask,render_template, jsonify, request, redirect, url_for, session
 from flask_cors import CORS
-import sqlite3,time
+import sqlite3,time,datetime
 from time import sleep
 
 
@@ -293,10 +293,53 @@ def datalist():
 @app.route('/bid', methods=['POST'])
 def bid():
     data = request.json
-    print(data)
-    nowtime = time.strftime("%m-%d %H:%M")
+    deadline1 = "2024/06/08"
+    deadline2 = "2024/06/15"
+    nowtime = time.strftime("%m-%d")
+    if deadline2 > nowtime:
+        if deadline1 > nowtime:
+            ratio = 2
+        else:
+            ratio = 1
+    else:
+        ratio = 0.5
+
     dbset(int(data['db']))
-    return jsonify({'success': True})
+    if data['type'] == 1:
+        c = cursor.execute(
+            "SELECT * FROM score WHERE ID = ? ORDER BY ID DESC LIMIT 1",(data['ID'],))
+        stu = c.fetchone()#(109021071, '測試用1', 1655, 50)
+        
+        if stu[2] >= int(data['score']):
+            chipadd = int(data['score'])*ratio
+            if stu[3] == None:
+                cursor.execute(
+                    "UPDATE score SET score = ?, chip = ? WHERE ID = ?",
+                    (stu[2]-int(data['score']) , chipadd, data['ID']))
+                cursor.execute(
+                "INSERT INTO history (ID, action, info, time) VALUES (?, ?, ?, ?)",
+                    (data['ID'], "消耗積分"+ str(data['score']) + '倍率為 '+ str(ratio)+ "倍", "籌碼兌換", nowtime))
+                connection.commit()
+                connection.close()
+                return jsonify({'success': True})
+            else:
+                cursor.execute(
+                    "UPDATE score SET score = ?, chip = ? WHERE ID = ?",
+                    (stu[2]-int(data['score']) , chipadd + stu[3], data['ID']))
+                cursor.execute(
+                "INSERT INTO history (ID, action, info, time) VALUES (?, ?, ?, ?)",
+                    (data['ID'], "消耗積分"+ str(data['score']) + '倍率為 '+ str(ratio)+ "倍", "籌碼兌換", nowtime))
+                connection.commit()
+                connection.close()
+                return jsonify({'success': True})
+        else:
+            return jsonify({'success': False})
+            
+
+
+
+
+        return jsonify({'success': True})
 
 
 if __name__ == '__main__':

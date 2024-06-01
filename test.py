@@ -1,21 +1,18 @@
-import sqlite3
+import datetime,time
 
-def copy_data_and_modify_table(database_name):
-    conn = sqlite3.connect(database_name)
-    cursor = conn.cursor()
 
-    # 將A資料表的ID和name複製至B資料表
-    cursor.execute("INSERT INTO stu (ID, name) SELECT ID, name FROM score")
+date = "01/01"
+nowtime = time.strftime("%m/%d")
 
-    cursor.execute("CREATE TABLE point AS SELECT ID, score FROM score")
-    cursor.execute("DROP TABLE score")
-    cursor.execute("ALTER TABLE point RENAME TO score")
-    cursor.execute("COMMIT")
 
-    conn.commit()
-    conn.close()
+date1 = time.strptime(nowtime, "%m/%d")
+date2 = time.strptime(date, "%m/%d")
 
-# 使用範例
-if __name__ == "__main__":
-    database_name = "bestuse.db"  # 更換成你的SQLite資料庫檔案名稱
-    copy_data_and_modify_table(database_name)
+print(date1)
+print(date2)
+
+if date1 > date2:
+    print("YES")
+else:
+    print("NO")
+

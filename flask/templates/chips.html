@@ -46,7 +46,7 @@
                             <label>學號</label>
                             <input id = "stuid" type = "text" value="" placeholder="新增成員學號"/>
                             <label>積分兌換</label>
-                            <input id = "sc" type = "text" value="" oninput="upchip()" placeholder="兌換比例1:2 不可逆"/>
+                            <input id = "sc" type = "text" value="" oninput="upchip()" placeholder="兌換籌碼不可逆"/>
                             <label >將兌換籌碼 : <span id="display">0</span></label>
                             <button type="button"  class="btn" id = "btn1" onclick="sub(1)">送出</button>
                         </div>
@@ -105,18 +105,34 @@
     });
 
     function upchip(){
+        var now = new Date();
+        var deadline1 = new Date("2024-06-08");
+        var deadline2 = new Date("2024-06-15");
+
+        if (deadline2 > now) {
+            if (deadline1 > now) {
+                var ratio = 2;
+            } else {
+                var ratio = 1;
+            }
+        } else {
+            var ratio = 0.5;
+        }
+
         var inputValue = document.getElementById('sc').value;
         var displayText = document.getElementById('display');
         parseInt(inputValue)
 
         if (!isNaN(inputValue)) {
-        displayText.textContent = inputValue * 2;
+        displayText.textContent = inputValue * ratio;
         } else {
         displayText.textContent = "ERROR";
         }
     }
 
     function sub(num){
+        document.getElementById("btn1").disabled = true;
+        document.getElementById("btn2").disabled = true;
         var btnnum = num
         if (btnnum === 1){
             fdata = btn_chip()
@@ -134,13 +150,15 @@
                 console.log('succ')
                 if (response.success) {
                     alert("資料提交成功！");
+                    document.getElementById("btn1").disabled = false;
+                    document.getElementById("btn2").disabled = false;
 
                 } else {
                     alert("提交失敗，請檢查資料！");
+                    document.getElementById("btn1").disabled = false;
+                    document.getElementById("btn2").disabled = false;
                 }
             },
-            complete: function() {
-            }
 
         })
     }
@@ -155,7 +173,7 @@
         "db": db,
         "type":type,
         "ID": stuid,
-        "chip":chip, 
+        "score":chip, 
         };
         console.log(fdata)
         return fdata
@@ -212,5 +230,5 @@
         });
     }
 
-    window.setInterval(list_ajax, 1000);
+    window.setInterval(list_ajax, 1500);
 </script>
