@@ -55,7 +55,7 @@ label{
 
 .maininfo {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     background-color: #ffffff;
     height: auto;
 

@@ -24,9 +24,8 @@
                 <div class="box" id ="modebox">
                     <label>查詢內容</label>
                     <select id = "mode" >
-                        <option value="0">積分對照</option>
-                        <option value="1">隊伍列表</option>
-                        <option value="2">籌碼對照</option>
+                        <option value="0">隊伍列表</option>
+                        <option value="1">主題得主</option>
                     </select>
                     <label>課程選擇</label>
                     <select id = "db" name="db" >
@@ -35,10 +34,20 @@
                         <option value="2">互動媒體設計2A</option>
                         <option value="3">互動媒體設計2B</option>
                     </select>
-                    <button type="button" class="btn" id ="btn3" onclick="btn()">送出</button>
                 </div>
                 <div class="box" id ="datalist">
+                    <table id="datatable" class="sclist">
+                        <thead>
+                            <tr>
+                                <th>主題</th>
+                                <th>得標者</th>
+                                <th>得標價</th>
+                            <tr>
+                        </thead>
+                        <tbody>
 
+                        </tbody>
+                    </table>
                 </div>
         </form>
             
@@ -47,44 +56,40 @@
 </html>
 
 <script>
-    function btn(){
-        var modeSelect = document.getElementById('mode').value;
-        var db = document.getElementById("db").value;
-        var fdata = {
-        "mode": modeSelect,
-        "db": db,
-        };
-        console.log(fdata)
 
-        $.ajax({
-            url:"/list",
-            method:"post",
-            data: JSON.stringify(fdata),
-            contentType: "application/json",
-            success:function(response){
-                console.log('succ')
-                if (response.success) {
-                    console.log(response.data)
-                    display(response.data)
-                    alert("資料提交成功！" + response.why);
-
-                }else{
-                    console.log( response.why)
-                    alert("提交失敗，" + response.why);
-                }
-            },
-        })
-
+    function update(data) {
+        var tbody = $("#datatable tbody");
+        tbody.empty(); // 清空当前表格数据
+        data.forEach(function(item) {
+            tbody.append("<tr>" +
+                "<td>" + item.tema + "</td>" +
+                "<td>" + item.bidder + "</td>" +
+                "<td>" + item.bid + "</td>" +
+                "</tr>"
+            );
+        });
     }
 
-    function display(data) {
-            var dataList = document.getElementById('datalist');
-            dataList.innerHTML = ''; // 清空原有資料
+    function tema_ajax() {
+        var dbValue = document.getElementById("db").value;
+        var type = document.getElementById('mode').value;
+        $.ajax({
+            url: '/tema',
+            type: "GET",
+            data: { 
+                db: dbValue,
+                type:type
+             },
+            dataType: "json",
+            success: function(res) {
+                update(res);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error fetching data:", error);
+            }
+        });
+    }
 
-            data.forEach(function(item) {
-                var listItem = document.createElement('div');
-                listItem.textContent = item[0];
-                dataList.appendChild(listItem);
-            });
-        }
+    window.setInterval(tema_ajax, 1500);
+
 </script>

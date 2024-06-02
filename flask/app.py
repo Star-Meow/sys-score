@@ -346,7 +346,7 @@ def bid():
             cursor.execute(
                 "UPDATE score SET chip = ? WHERE ID = ?",
                 (stu[3]- int(data['bid']), data['bidder']))
-            print(stu[3]- int(data['bid']), data['bidder'])
+            
             connection.commit()
 
             return jsonify({'success': True})
@@ -356,6 +356,35 @@ def bid():
         return jsonify({'success': False})       
 
 
+@app.route('/tema', methods=['GET'])
+def tema():
+    d = int(request.args.get('db'))
+    t = int(request.args.get('type'))
+
+    if d is not None:
+        if t == 0:
+            dbset(d)
+            c = cursor.execute("SELECT * FROM team ORDER BY Party")
+            lst = c.fetchall()
+            data = [{
+                "party": i[0],
+                "count": i[1],
+                "member": i[2],} for i in lst]
+            
+            return jsonify(data)
+        elif t == 1:
+            dbset(d)
+            c = cursor.execute("SELECT * FROM bid ORDER BY bidder")
+            lst = c.fetchall()
+            data = [{
+                "tema": i[0],
+                "bidder": i[1],
+                "bid": i[2],} for i in lst]
+            
+            return jsonify(data)
+
+    else:
+        return jsonify({"error": "db parameter is missing"}), 400
 
 
 
