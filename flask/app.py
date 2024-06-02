@@ -293,23 +293,24 @@ def datalist():
 @app.route('/bid', methods=['POST'])
 def bid():
     data = request.json
-    deadline1 = "2024/06/08"
-    deadline2 = "2024/06/15"
-    nowtime = time.strftime("%m-%d")
-    if deadline2 > nowtime:
-        if deadline1 > nowtime:
-            ratio = 2
-        else:
-            ratio = 1
-    else:
-        ratio = 0.5
+
 
     dbset(int(data['db']))
     if data['type'] == 1:
+        deadline1 = "2024/06/08"
+        deadline2 = "2024/06/15"
+        nowtime = time.strftime("%m-%d")
+        if deadline2 > nowtime:
+            if deadline1 > nowtime:
+                ratio = 2
+            else:
+                ratio = 1
+        else:
+            ratio = 0.5
+
         c = cursor.execute(
             "SELECT * FROM score WHERE ID = ? ORDER BY ID DESC LIMIT 1",(data['ID'],))
-        stu = c.fetchone()#(109021071, '測試用1', 1655, 50)
-        
+        stu = c.fetchone()
         if stu[2] >= int(data['score']):
             chipadd = int(data['score'])*ratio
             if stu[3] == None:
@@ -334,12 +335,28 @@ def bid():
                 return jsonify({'success': True})
         else:
             return jsonify({'success': False})
-            
+    if data['type'] == 2: 
+        c = cursor.execute(
+            "SELECT * FROM score WHERE ID = ? ORDER BY ID DESC LIMIT 1",(data['bidder'],))
+        stu = c.fetchone()
+        if stu[3] >=  int(data['bid']):
+            cursor.execute(
+            "INSERT INTO bid (tema, bidder, bid) VALUES (?, ?, ?)",
+                (data['tema'],data['bidder'],data['bid']))
+            cursor.execute(
+                "UPDATE score SET chip = ? WHERE ID = ?",
+                (stu[3]- int(data['bid']), data['bidder']))
+            print(stu[3]- int(data['bid']), data['bidder'])
+            connection.commit()
+
+            return jsonify({'success': True})
+        else:
+            return jsonify({'success': False, "why": "分數不足買下標物"})  
+    else:
+        return jsonify({'success': False})       
 
 
 
-
-        return jsonify({'success': True})
 
 
 if __name__ == '__main__':

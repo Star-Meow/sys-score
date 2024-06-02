@@ -140,7 +140,6 @@
             fdata = btn_bid()
             
         }
-        
         $.ajax({
             url:"/bid",
             method:"post",
@@ -163,6 +162,19 @@
         })
     }
 
+    function valiForm() {
+        var stuid = document.getElementById("stuid").value;
+        var chip = document.getElementById("sc").value;
+
+        if (stuid === "" || chip === "" || isNaN(chip)) {
+            alert("請輸入正確的學號和數字的積分兌換值！");
+            return false;
+        }
+        return true;
+    }
+
+
+
 
     function btn_chip(){
         var db = document.getElementById("db").value;
@@ -177,6 +189,7 @@
         };
         console.log(fdata)
         return fdata
+        
     }
 
     function btn_bid(){
