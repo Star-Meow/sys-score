@@ -298,7 +298,7 @@ def bid():
     dbset(int(data['db']))
     if data['type'] == 1:
         deadline1 = "2024/06/07"
-        deadline2 = "2024/06/14"
+        deadline2 = "2024/06/10"
         nowtime = time.strftime("%m-%d")
         if deadline2 > nowtime:
             if deadline1 > nowtime:
