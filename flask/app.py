@@ -299,7 +299,7 @@ def bid():
     if data['type'] == 1:
         deadline1 = "2024/06/07"
         deadline2 = "2024/06/10"
-        nowtime = time.strftime("%m-%d")
+        nowtime = time.strftime("%y/%m/%d")
         if deadline2 > nowtime:
             if deadline1 > nowtime:
                 ratio = 2
@@ -312,7 +312,7 @@ def bid():
             "SELECT * FROM score WHERE ID = ? ORDER BY ID DESC LIMIT 1",(data['ID'],))
         stu = c.fetchone()
         if stu[2] >= int(data['score']):
-            chipadd = int(data['score'])*ratio
+            chipadd = int(int(data['score'])*ratio)
             if stu[3] == None:
                 cursor.execute(
                     "UPDATE score SET score = ?, chip = ? WHERE ID = ?",
